@@ -1,0 +1,9 @@
+[package]
+name = "brix_cli"
+version = "0.1.0"
+authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
