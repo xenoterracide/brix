@@ -9,6 +9,7 @@ mod args;
 mod config;
 use config::Config;
 
+use brix_cli;
 use brix_config_loader::{self, Command};
 use brix_processor;
 
@@ -25,7 +26,7 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
     let config = Config::new(matches);
 
     if let Err(e) = module_from_config(&config) {
-        eprintln!("{}", e);
+        brix_cli::std_error_and_quit(e);
     }
 
     process::exit(0);
@@ -35,15 +36,15 @@ fn module_from_config(config: &Config) -> Result<()> {
     let config_root = Path::new(&config.config_dir);
     let language_dir = Path::new(&config.language);
     let module_dir = config_root.join(language_dir);
-    let declaration = search_for_module_declaration(module_dir.to_str().unwrap(), &config.config_name)?;
+    let declaration =
+        search_for_module_declaration(module_dir.to_str().unwrap(), &config.config_name)?;
 
     if declaration.is_none() {
-        eprintln!(
+        brix_cli::error_and_quit(&format!(
             "Could not find module declaration for '{}' in {}",
             config.config_name,
             module_dir.to_string_lossy()
-        );
-        process::exit(2);
+        ));
     }
 
     let mut file = File::open(declaration.unwrap().as_ref())?;
@@ -99,7 +100,7 @@ fn template_and_copy(module_dir: &Path, source: &str, dest: &str) {
     // TODO: also actually do templating and stop unwrapping everywhere
     let source_path = module_dir.join(source);
     let contents = fs::read_to_string(source_path).unwrap();
-    
+
     let path = Path::new(dest);
     let parent = path.parent().unwrap(); // Fix
 
