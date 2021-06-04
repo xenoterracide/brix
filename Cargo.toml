@@ -12,11 +12,13 @@ name = "brix"
 [workspace]
 members = [
     "crates/brix_cli",
-    "crates/brix_processor"
+    "crates/brix_processor",
+    "crates/brix_config_loader"
 ]
 
 [dependencies]
 brix_processor = { path = "crates/brix_processor" }
+brix_config_loader = { path = "crates/brix_config_loader" }
 
 [dependencies.clap]
 version = "2.33.3"

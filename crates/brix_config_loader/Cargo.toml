@@ -1,9 +1,9 @@
 [package]
-name = "brix_processor"
+name = "brix_config_loader"
 version = "0.1.0"
 authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>"]
 edition = "2018"
 
 [dependencies]
-tinytemplate = "1.2.1"
 serde = { version = "1.0.126", features = ["derive"] }
+serde_yaml = "0.8.17"

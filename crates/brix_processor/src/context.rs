@@ -2,7 +2,7 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct Context {
-    module: String
+    module: String,
 }
 
 impl Context {

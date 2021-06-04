@@ -1,4 +1,4 @@
 # Here's how to run it for now
 ```
-cargo run -- rust route brix api
+cargo run -- rust route brix test
 ```
