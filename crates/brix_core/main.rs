@@ -35,12 +35,12 @@ fn module_from_config(config: &Config) -> Result<()> {
     let config_root = Path::new(&config.config_dir);
     let language_dir = Path::new(&config.language);
     let module_dir = config_root.join(language_dir);
-    let declaration = search_for_module_declaration(module_dir.to_str().unwrap(), &config.module)?;
+    let declaration = search_for_module_declaration(module_dir.to_str().unwrap(), &config.config_name)?;
 
     if declaration.is_none() {
         eprintln!(
             "Could not find module declaration for '{}' in {}",
-            config.module,
+            config.config_name,
             module_dir.to_string_lossy()
         );
         process::exit(2);
