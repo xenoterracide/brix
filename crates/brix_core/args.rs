@@ -14,7 +14,7 @@ pub const MODULE: &str = "MODULE";
 // Flags
 pub const CONFIG_DIR: &str = "CONFIG_DIR";
 
-pub fn clap_matches() -> Result<clap::ArgMatches<'static>, Box<dyn std::error::Error>> {
+pub fn clap_matches() -> Result<clap::ArgMatches<'static>, crate::BrixError> {
     let err = match app::app().get_matches_from_safe(env::args_os()) {
         Ok(matches) => return Ok(matches),
         Err(err) => err,

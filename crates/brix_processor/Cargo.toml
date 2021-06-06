@@ -5,5 +5,6 @@ authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>"]
 edition = "2018"
 
 [dependencies]
+brix_errors = { path = "../../crates/brix_errors" }
 tinytemplate = "1.2.1"
 serde = { version = "1.0.126", features = ["derive"] }

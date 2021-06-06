@@ -3,7 +3,9 @@ use tinytemplate::TinyTemplate;
 mod context;
 use context::Context;
 
-pub fn process(module: String, content: String) -> Result<String, Box<dyn std::error::Error>> {
+use brix_errors::BrixError;
+
+pub fn process(module: String, content: String) -> Result<String, BrixError> {
     let mut tt = TinyTemplate::new();
     tt.add_template(&module, &content)?;
 

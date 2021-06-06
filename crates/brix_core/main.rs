@@ -7,13 +7,15 @@ use std::process;
 mod app;
 mod args;
 mod config;
+mod util;
 use config::Config;
 
 use brix_cli;
 use brix_config_loader::{self, Command};
+use brix_errors::BrixError;
 use brix_processor;
 
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+type Result<T> = std::result::Result<T, BrixError>;
 
 fn main() {
     if let Err(err) = args::clap_matches().and_then(next) {
@@ -25,29 +27,18 @@ fn main() {
 fn next(matches: ArgMatches<'static>) -> Result<()> {
     let config = Config::new(matches);
 
-    if let Err(e) = module_from_config(&config) {
-        brix_cli::std_error_and_quit(e);
-    }
-
-    process::exit(0);
-}
-
-fn module_from_config(config: &Config) -> Result<()> {
     let config_root = Path::new(&config.config_dir);
     let language_dir = Path::new(&config.language);
     let module_dir = config_root.join(language_dir);
-    let declaration =
-        search_for_module_declaration(module_dir.to_str().unwrap(), &config.config_name)?;
 
-    if declaration.is_none() {
-        brix_cli::error_and_quit(&format!(
-            "Could not find module declaration for '{}' in {}",
-            config.config_name,
-            module_dir.to_string_lossy()
-        ));
+    let found_module = module_from_config(&module_dir, &config);
+    if found_module.is_err() {
+        brix_cli::brix_error(found_module.unwrap_err());
+        process::exit(2);
     }
 
-    let mut file = File::open(declaration.unwrap().as_ref())?;
+    let declaration = found_module.unwrap();
+    let mut file = File::open(declaration)?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
@@ -59,17 +50,36 @@ fn module_from_config(config: &Config) -> Result<()> {
         eprintln!("No command found for config file!");
     }
 
-    match command {
+    let result = match command {
         Command::TemplateAndCopy(source, destination) => {
-            template_and_copy(&module_dir, &source, &destination);
+            template_and_copy(&module_dir, &source, &destination)
         }
-        _ => {}
+        _ => Ok(()),
     };
 
-    Ok(())
+    if result.is_err() {
+        brix_cli::brix_error(result.unwrap_err());
+    }
+
+    process::exit(0);
 }
 
-fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<Box<PathBuf>>> {
+fn module_from_config(dir: &PathBuf, config: &Config) -> Result<PathBuf> {
+    let declaration =
+        search_for_module_declaration(dir.to_str().unwrap(), &config.config_name)?;
+
+    if declaration.is_none() {
+        brix_cli::error_and_quit(&format!(
+            "Could not find module declaration for '{}' in {}",
+            config.config_name,
+            util::display_path(&dir.to_string_lossy())
+        ));
+    }
+
+    Ok(declaration.unwrap())
+}
+
+fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<PathBuf>> {
     let paths = fs::read_dir(path)?;
     let mut results = Vec::new();
 
@@ -89,17 +99,16 @@ fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<Box<Pa
     // For now, just select the first match, but in the future be aware
     // that the user might specify an extension they want to use other another
     if results.len() > 0 {
-        return Ok(Some(Box::new(results.get(0).unwrap().to_path_buf())));
+        return Ok(Some(results.get(0).unwrap().to_path_buf()));
     }
 
     Ok(None)
 }
 
 // TODO: perhaps put this in a separate module
-fn template_and_copy(module_dir: &Path, source: &str, dest: &str) {
-    // TODO: also actually do templating and stop unwrapping everywhere
+fn template_and_copy(module_dir: &Path, source: &str, dest: &str) -> Result<()> {
     let source_path = module_dir.join(source);
-    let contents = fs::read_to_string(source_path).unwrap();
+    let contents = fs::read_to_string(source_path)?;
 
     let path = Path::new(dest);
     let parent = path.parent().unwrap(); // Fix
@@ -109,4 +118,5 @@ fn template_and_copy(module_dir: &Path, source: &str, dest: &str) {
     file.write_all(contents.as_bytes()).unwrap();
 
     println!("Done!");
+    Ok(())
 }

@@ -1,9 +1,9 @@
 [package]
-name = "brix_cli"
+name = "brix_errors"
 version = "0.1.0"
 authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>"]
 edition = "2018"
 
 [dependencies]
-brix_errors = { path = "../../crates/brix_errors" }
-colour = "0.6.0"
+clap = "2.33.3"
+tinytemplate = "1.2.1"
