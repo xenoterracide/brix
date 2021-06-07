@@ -1,6 +1,7 @@
-use clap;
-use std::io;
 use std::fmt::{self, Display};
+use std::io;
+
+use clap;
 
 #[derive(Debug)]
 pub struct BrixError {
@@ -55,7 +56,7 @@ impl Display for BrixErrorKind {
 }
 
 impl Display for BrixError {
-    fn fmt(&self, fmt: &mut fmt::Formatter) ->  Result<(), fmt::Error> {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         write!(fmt, "{} error: {}", self.kind, self.message)
     }
 }

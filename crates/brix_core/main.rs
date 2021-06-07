@@ -1,19 +1,20 @@
-use clap::ArgMatches;
 use std::fs::{self, File};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 use std::process;
 
-mod app;
-mod args;
-mod config;
-mod util;
-use config::Config;
+use clap::ArgMatches;
 
 use brix_cli;
 use brix_config_loader::{self, Command};
 use brix_errors::BrixError;
 use brix_processor;
+use config::Config;
+
+mod app;
+mod args;
+mod config;
+mod util;
 
 type Result<T> = std::result::Result<T, BrixError>;
 
@@ -65,8 +66,7 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
 }
 
 fn module_from_config(dir: &PathBuf, config: &Config) -> Result<PathBuf> {
-    let declaration =
-        search_for_module_declaration(dir.to_str().unwrap(), &config.config_name)?;
+    let declaration = search_for_module_declaration(dir.to_str().unwrap(), &config.config_name)?;
 
     if declaration.is_none() {
         brix_cli::error_and_quit(&format!(

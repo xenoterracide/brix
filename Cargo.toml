@@ -25,6 +25,9 @@ brix_config_loader = { path = "crates/brix_config_loader" }
 brix_errors = { path = "crates/brix_errors" }
 brix_processor = { path = "crates/brix_processor" }
 
+[dev-dependencies]
+rusty-hook = "^0"
+
 [dependencies.clap]
 version = "2.33.3"
 default-features = false
