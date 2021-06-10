@@ -6,4 +6,4 @@ edition = "2018"
 
 [dependencies]
 brix_errors = { path = "../../crates/brix_errors" }
-colour = "0.6.0"
+colour = "^0"

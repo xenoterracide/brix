@@ -1,9 +1,13 @@
 [package]
 name = "brix_commands"
 version = "0.1.0"
-authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>"]
+authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>", "Caleb Cushing <xenoterracide@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+log = "^0"
 brix_errors = { path = "../../crates/brix_errors" }
-regex = "1.5.4"
+regex = "^1"
+simple-error = "^0"
+validator = { version = "^0", features = ["derive"] }
+dialoguer = "^0"

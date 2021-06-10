@@ -1,12 +1,93 @@
+use std::format;
+use std::fs::create_dir_all;
 use std::iter::Map;
 use std::path::PathBuf;
 
+use dialoguer::Confirm;
+use log::{debug, info};
 use regex::Regex;
-
-use brix_errors::BrixError;
+use simple_error::{simple_error, SimpleError};
+use validator::ValidationErrors;
 
 pub trait Command {
-    fn run(&self, params: ProcessedCommandParams) -> Result<(), BrixError>;
+    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), SimpleError>;
+}
+
+pub trait OverwritableCommand {
+    type Params: OverwritableParams;
+    fn ask_to_write(&self, path: &PathBuf) -> bool {
+        let val = Confirm::new()
+            .with_prompt(format!("overwrite '{}'", path.display()))
+            .default(false)
+            .interact()?;
+        val
+    }
+
+    fn write(&self, params: Self::Params) -> Result<(), SimpleError> {
+        info!("writing: '{}'", params.destination().display());
+        self.write_impl(params)
+    }
+
+    fn skip_write(&self, path: &PathBuf) -> Result<(), SimpleError> {
+        info!("skipping: '{}'", path.display());
+        Ok(())
+    }
+
+    fn validate(&self, pcp: ProcessedCommandParams) -> Result<Self::Params, ValidationErrors>;
+
+    fn write_impl(&self, params: Self::Params) -> Result<(), SimpleError>;
+}
+
+impl<T> Command for T
+where
+    T: OverwritableCommand<Params = Box<dyn OverwritableParams>>,
+{
+    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), SimpleError> {
+        let params = self
+            .validate(pcp)
+            .map_err(|err| SimpleError::with("validate", err))
+            .unwrap();
+
+        if !params.source().exists() {
+            return Err(simple_error!(format!(
+                "source '{}' does not exist",
+                params.source().display()
+            )));
+        }
+
+        let dest = &params.destination();
+        let parent = &dest.parent();
+        if !(parent.is_some() && parent.unwrap().exists()) {
+            if parent.is_some() {
+                debug!("creating directory '{}'", parent.unwrap().display());
+                create_dir_all(parent.unwrap()).map_err(|err| {
+                    SimpleError::with(
+                        &*format!("unable to create '{}'", parent.unwrap().display()),
+                        err,
+                    )
+                })?;
+            }
+        }
+
+        if params.overwrite().is_some() {
+            let overwrite = params.overwrite().unwrap();
+            if overwrite {
+                return self.write(params);
+            } else if dest.exists() {
+                return self.skip_write(dest);
+            }
+        }
+        if self.ask_to_write(dest).unwrap() {
+            return self.write(params);
+        }
+        self.write(params)
+    }
+}
+
+pub trait OverwritableParams {
+    fn source(&self) -> PathBuf;
+    fn destination(&self) -> PathBuf;
+    fn overwrite(&self) -> Option<bool>;
 }
 
 pub struct ProcessedCommandParams {
