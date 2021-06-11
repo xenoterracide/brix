@@ -3,5 +3,5 @@ use spectral::boolean::BooleanAssertions;
 
 #[test]
 fn my_test() {
-    assert_that(&true).is_false();
+    assert_that!(true).is_false();
 }
