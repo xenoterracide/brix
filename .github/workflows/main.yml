@@ -4,6 +4,7 @@ on:
     - '**.rs'
     - '**.toml'
     - Cargo.lock
+    - .github/**
 name: build
 jobs:
   check:
