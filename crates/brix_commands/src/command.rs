@@ -3,8 +3,9 @@ use std::fs::create_dir_all;
 use std::iter::Map;
 use std::path::PathBuf;
 
+use dialoguer::console::Term;
 use dialoguer::Confirm;
-use log::{debug, info};
+use log::{debug, error, info};
 use regex::Regex;
 use simple_error::{simple_error, SimpleError};
 use validator::ValidationErrors;
@@ -15,12 +16,21 @@ pub trait Command {
 
 pub trait OverwritableCommand {
     type Params: OverwritableParams;
+
+    fn term(&self) -> Term;
+
     fn ask_to_write(&self, path: &PathBuf) -> bool {
-        let val = Confirm::new()
+        let res = Confirm::new()
             .with_prompt(format!("overwrite '{}'", path.display()))
             .default(false)
-            .interact()?;
-        val
+            .interact_on(&Term::stdout());
+        match res {
+            Ok(b) => b,
+            Err(e) => {
+                error!("{}", e);
+                false
+            }
+        }
     }
 
     fn write(&self, params: Self::Params) -> Result<(), SimpleError> {
@@ -77,7 +87,7 @@ where
                 return self.skip_write(dest);
             }
         }
-        if self.ask_to_write(dest).unwrap() {
+        if self.ask_to_write(dest) {
             return self.write(params);
         }
         self.write(params)

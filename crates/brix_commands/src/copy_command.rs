@@ -1,6 +1,7 @@
 use std::fs::copy;
 use std::path::PathBuf;
 
+use dialoguer::console::Term;
 use log::debug;
 use simple_error::{try_with, SimpleError};
 use validator::{Validate, ValidationErrors};
@@ -37,10 +38,19 @@ struct Params {
     overwrite: Option<bool>,
 }
 
-struct CopyCommand {}
+struct CopyCommand {
+    term: Term,
+}
+
+impl CopyCommand {}
 
 impl OverwritableCommand for CopyCommand {
     type Params = CopyParams;
+
+    fn term(&self) -> Term {
+        self.term.clone()
+    }
+
     fn validate(&self, pcp: ProcessedCommandParams) -> Result<CopyParams, ValidationErrors> {
         let cp = Params {
             source: pcp.source,
