@@ -1,7 +1,7 @@
 use std::format;
 use std::fs::create_dir_all;
 use std::iter::Map;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use dialoguer::console::Term;
 use dialoguer::Confirm;
@@ -9,8 +9,6 @@ use log::{debug, error, info};
 use regex::Regex;
 use simple_error::{simple_error, SimpleError};
 use validator::ValidationErrors;
-
-pub use copy::*;
 
 pub mod copy;
 
@@ -23,7 +21,7 @@ pub trait OverwritableCommand {
 
     fn term(&self) -> Term;
 
-    fn ask_to_write(&self, path: &PathBuf) -> bool {
+    fn ask_to_write(&self, path: &Path) -> bool {
         let res = Confirm::new()
             .with_prompt(format!("overwrite '{}'", path.display()))
             .default(false)
@@ -42,7 +40,7 @@ pub trait OverwritableCommand {
         self.write_impl(params)
     }
 
-    fn skip_write(&self, path: &PathBuf) -> Result<(), SimpleError> {
+    fn skip_write(&self, path: &Path) -> Result<(), SimpleError> {
         info!("skipping: '{}'", path.display());
         Ok(())
     }
@@ -71,16 +69,14 @@ where
 
         let dest = &params.destination();
         let parent = &dest.parent();
-        if !(parent.is_some() && parent.unwrap().exists()) {
-            if parent.is_some() {
-                debug!("creating directory '{}'", parent.unwrap().display());
-                create_dir_all(parent.unwrap()).map_err(|err| {
-                    SimpleError::with(
-                        &*format!("unable to create '{}'", parent.unwrap().display()),
-                        err,
-                    )
-                })?;
-            }
+        if !(parent.is_some() && parent.unwrap().exists()) && parent.is_some() {
+            debug!("creating directory '{}'", parent.unwrap().display());
+            create_dir_all(parent.unwrap()).map_err(|err| {
+                SimpleError::with(
+                    &*format!("unable to create '{}'", parent.unwrap().display()),
+                    err,
+                )
+            })?;
         }
 
         if params.overwrite().is_some() {

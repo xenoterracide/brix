@@ -1,8 +1,6 @@
 use std::fmt::{self, Display};
 use std::io;
 
-use clap;
-
 #[derive(Debug)]
 pub struct BrixError {
     kind: BrixErrorKind,
