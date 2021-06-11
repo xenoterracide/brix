@@ -10,6 +10,10 @@ use regex::Regex;
 use simple_error::{simple_error, SimpleError};
 use validator::ValidationErrors;
 
+pub use copy::*;
+
+pub mod copy;
+
 pub trait Command {
     fn run(&self, pcp: ProcessedCommandParams) -> Result<(), SimpleError>;
 }
