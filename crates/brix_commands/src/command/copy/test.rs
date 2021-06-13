@@ -1,12 +1,12 @@
 // use std::error::Error;
 // use std::ops::Deref;
-use std::path::PathBuf;
 use dialoguer::console::Term;
+use std::path::PathBuf;
 // use simple_error::SimpleError;
-use spectral::assert_that;
-use spectral::result::{ResultAssertions};
-use crate::{Command, ProcessedCommandParams};
 use super::CopyCommand;
+use crate::{Command, ProcessedCommandParams};
+use spectral::assert_that;
+use spectral::result::ResultAssertions;
 
 #[test]
 fn run_invalid_param_source() {
