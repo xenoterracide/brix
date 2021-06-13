@@ -17,7 +17,7 @@ pub trait Command {
 }
 
 pub trait OverwritableCommand {
-    type Params: OverwritableParams;
+    type Params: OverwritableParams + 'static;
 
     fn term(&self) -> Term;
 
@@ -52,13 +52,12 @@ pub trait OverwritableCommand {
 
 impl<T> Command for T
 where
-    T: OverwritableCommand<Params = Box<dyn OverwritableParams>>,
+    T: OverwritableCommand,
 {
     fn run(&self, pcp: ProcessedCommandParams) -> Result<(), SimpleError> {
         let params = self
             .validate(pcp)
-            .map_err(|err| SimpleError::with("validate", err))
-            .unwrap();
+            .map_err(|err| SimpleError::with("validate", err))?;
 
         if !params.source().exists() {
             return Err(simple_error!(format!(
