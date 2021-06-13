@@ -6,6 +6,8 @@ use std::process;
 use clap::ArgMatches;
 
 use brix_cli;
+#[allow(unused_imports)]
+use brix_commands;
 use brix_config_loader::{self, Command};
 use brix_errors::BrixError;
 use brix_processor;

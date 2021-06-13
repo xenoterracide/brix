@@ -8,6 +8,9 @@ use validator::{Validate, ValidationErrors};
 
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
 
+#[cfg(test)]
+mod test;
+
 struct CopyParams {
     source: PathBuf,
     destination: PathBuf,
