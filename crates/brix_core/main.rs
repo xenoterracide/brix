@@ -1,8 +1,8 @@
+use clap::ArgMatches;
 use std::fs::{self, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process;
-use clap::ArgMatches;
 
 use brix_cli;
 use brix_config_loader::YamlConfigParser;

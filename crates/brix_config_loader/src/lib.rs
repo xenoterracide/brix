@@ -7,8 +7,8 @@ mod parsers;
 use parsers::ConfigParser;
 pub use parsers::YamlConfigParser;
 
-use brix_commands::{Command, ProcessedCommandParams};
 use brix_commands::CopyCommand;
+use brix_commands::{Command, ProcessedCommandParams};
 use brix_errors::BrixError;
 
 pub type ParserList = Vec<Box<dyn ConfigParser>>;
@@ -27,7 +27,11 @@ impl ConfigLoader {
         }
     }
 
-    pub fn load(&mut self, config_file: &PathBuf, processed: &str) -> Result<CommandList, BrixError> {
+    pub fn load(
+        &mut self,
+        config_file: &PathBuf,
+        processed: &str,
+    ) -> Result<CommandList, BrixError> {
         self.config_dir = Some(config_file.parent().unwrap().to_path_buf());
         let mut parser: Option<&Box<dyn ConfigParser>> = None;
 
@@ -48,14 +52,14 @@ impl ConfigLoader {
 
     fn process(&self, config: &RawConfig) -> Result<CommandList, BrixError> {
         let mut list = CommandList::new();
-        
+
         for command in config.commands.iter() {
             let key = command.keys().next().unwrap();
             let value = command.values().next().unwrap();
             let args = self.create_processed_args(value)?;
             let command = match key.to_lowercase().as_str() {
                 "copy" => CopyCommand::new(),
-                _ => panic!("Command `{}` not found!", key) 
+                _ => panic!("Command `{}` not found!", key),
             };
 
             list.push((Box::new(command), args));
