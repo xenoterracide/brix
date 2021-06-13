@@ -1,21 +1,19 @@
 use std::fs::{self, File};
-use std::io::{Read, Write};
+use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process;
-
 use clap::ArgMatches;
 
 use brix_cli;
 use brix_config_loader::YamlConfigParser;
 use brix_config_loader::{ConfigLoader, ParserList};
 use brix_errors::BrixError;
-use brix_processor;
-use config::Config;
 
 mod app;
 mod args;
 mod config;
 mod util;
+use config::Config;
 
 type Result<T> = std::result::Result<T, BrixError>;
 
@@ -40,30 +38,17 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
     }
 
     let declaration = found_module.unwrap();
-    let mut file = File::open(declaration)?;
+    let mut file = File::open(declaration.clone())?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-    let _processed = brix_processor::process(config.module.clone(), contents)?;
+    let processed = brix_processor::process(config.module.clone(), contents)?;
     let parsers: ParserList = vec![Box::new(YamlConfigParser {})];
-    let loader = ConfigLoader::new(parsers);
-    let _commands = loader.load(declaration);
-    // let _command = brix_config_loader::load(&processed);
+    let mut loader = ConfigLoader::new(parsers);
+    let commands = loader.load(&declaration, &processed)?;
 
-    // TODO: handle invalid config loading in loader instead of this
-    if let Command::Empty = command {
-        eprintln!("No command found for config file!");
-    }
-
-    let result = match command {
-        Command::TemplateAndCopy(source, destination) => {
-            template_and_copy(&module_dir, &source, &destination)
-        }
-        _ => Ok(()),
-    };
-
-    if result.is_err() {
-        brix_cli::brix_error(result.unwrap_err());
+    for (command, args) in commands.into_iter() {
+        command.run(args).unwrap();
     }
 
     process::exit(0);
@@ -107,20 +92,4 @@ fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<PathBu
     }
 
     Ok(None)
-}
-
-// TODO: perhaps put this in a separate module
-fn template_and_copy(module_dir: &Path, source: &str, dest: &str) -> Result<()> {
-    let source_path = module_dir.join(source);
-    let contents = fs::read_to_string(source_path)?;
-
-    let path = Path::new(dest);
-    let parent = path.parent().unwrap(); // Fix
-
-    fs::create_dir_all(parent).unwrap();
-    let mut file = File::create(dest).unwrap();
-    file.write_all(contents.as_bytes()).unwrap();
-
-    println!("Done!");
-    Ok(())
 }

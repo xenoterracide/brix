@@ -8,7 +8,10 @@ use validator::{Validate, ValidationErrors};
 
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
 
-struct CopyParams {
+#[cfg(test)]
+mod test;
+
+pub struct CopyParams {
     source: PathBuf,
     destination: PathBuf,
     overwrite: Option<bool>,
@@ -34,15 +37,20 @@ struct Params {
     source: Option<PathBuf>,
     #[validate(required)]
     destination: Option<PathBuf>,
-    #[validate(required)]
     overwrite: Option<bool>,
 }
 
-struct CopyCommand {
+pub struct CopyCommand {
     term: Term,
 }
 
-impl CopyCommand {}
+impl CopyCommand {
+    pub fn new() -> Self {
+        Self {
+            term: Term::stderr(),
+        } // TODO: Control over stderr or stdout
+    }
+}
 
 impl OverwritableCommand for CopyCommand {
     type Params = CopyParams;

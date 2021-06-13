@@ -5,5 +5,9 @@ authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>"]
 edition = "2018"
 
 [dependencies]
+brix_commands = { path = "../brix_commands" }
+brix_errors = { path = "../brix_errors" }
+brix_processor = { path = "../brix_processor" }
 serde = { version = "1.0.126", features = ["derive"] }
 serde_yaml = "0.8.17"
+regex = "^1"

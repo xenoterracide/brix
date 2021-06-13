@@ -1,7 +1,4 @@
-mod command;
-mod copy_command;
+pub mod command;
 
-#[cfg(test)]
-mod tests {
-    mod copy_command_test;
-}
+pub use command::{Command, OverwritableParams, ProcessedCommandParams};
+pub use command::copy::CopyCommand;
