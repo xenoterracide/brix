@@ -1,0 +1,24 @@
+commmands:
+- pebble:
+    source: files/Application.java.peb
+    destination: {{project}}/{{name}}/{{module}}/src/main/java/com/xenoterracide/Application.java
+    overwrite: false
+    # context:
+    #   name: app
+- copy:
+    source: files/gradlew
+    destination: gradlew
+    overwrite: false
+- copy:
+    source: files/gradlew.bat
+    destination: gradlew.bat
+    overwrite: false
+- copy:
+    source: files/gradle/wrapper/gradle-wrapper.jar
+    destination: gradle/wrapper/gradle-wrapper.jar
+    overwrite: false
+- search_replace:
+    destination: settings.gradle.kts
+    search: "(^include\($)"
+    replace: &1app
+ - exec: ./gradlew dependencies --write-locks

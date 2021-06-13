@@ -6,7 +6,8 @@ use std::process;
 use clap::ArgMatches;
 
 use brix_cli;
-use brix_config_loader::{self, Command};
+use brix_config_loader::YamlConfigParser;
+use brix_config_loader::{ConfigLoader, ParserList};
 use brix_errors::BrixError;
 use brix_processor;
 use config::Config;
@@ -43,8 +44,11 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-    let processed = brix_processor::process(config.module.clone(), contents)?;
-    let command = brix_config_loader::load(&processed);
+    let _processed = brix_processor::process(config.module.clone(), contents)?;
+    let parsers: ParserList = vec![Box::new(YamlConfigParser {})];
+    let loader = ConfigLoader::new(parsers);
+    let _commands = loader.load(declaration);
+    // let _command = brix_config_loader::load(&processed);
 
     // TODO: handle invalid config loading in loader instead of this
     if let Command::Empty = command {
