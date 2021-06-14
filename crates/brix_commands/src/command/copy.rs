@@ -9,8 +9,11 @@ use validator::{Validate, ValidationErrors};
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
 
 #[cfg(test)]
-mod test;
+mod tests {
+    mod from;
+}
 
+#[derive(Debug)]
 pub struct CopyParams {
     source: PathBuf,
     destination: PathBuf,
@@ -37,7 +40,6 @@ struct Params {
     source: Option<PathBuf>,
     #[validate(required)]
     destination: Option<PathBuf>,
-    #[validate(required)]
     overwrite: Option<bool>,
 }
 
@@ -54,7 +56,7 @@ impl OverwritableCommand for CopyCommand {
         self.term.clone()
     }
 
-    fn validate(&self, pcp: ProcessedCommandParams) -> Result<CopyParams, ValidationErrors> {
+    fn from(&self, pcp: ProcessedCommandParams) -> Result<CopyParams, ValidationErrors> {
         let cp = Params {
             source: pcp.source,
             destination: pcp.destination,
