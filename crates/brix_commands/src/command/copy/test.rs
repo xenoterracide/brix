@@ -1,15 +1,31 @@
-// use std::error::Error;
-// use std::ops::Deref;
-use dialoguer::console::Term;
 use std::path::PathBuf;
-// use simple_error::SimpleError;
-use super::CopyCommand;
-use crate::{Command, ProcessedCommandParams};
+
+use dialoguer::console::Term;
+use simple_error::SimpleError;
 use spectral::assert_that;
 use spectral::result::ResultAssertions;
 
+use crate::command::copy::OverwritableCommand;
+use crate::{Command, CopyCommand, ProcessedCommandParams};
+
 #[test]
-fn run_invalid_param_source() {
+fn valid_param() {
+    let command = CopyCommand {
+        term: Term::stdout(),
+    };
+    let params = ProcessedCommandParams {
+        source: Option::Some(PathBuf::new()),
+        destination: None,
+        overwrite: None,
+        search: None,
+        replace: None,
+        context: None,
+    };
+    assert_that!(command.validate(params)).is_err();
+}
+
+#[test]
+fn run_invalid_param_dest() {
     let command = CopyCommand {
         term: Term::stdout(),
     };
@@ -24,7 +40,7 @@ fn run_invalid_param_source() {
     assert_that!(command.run(params)).is_err();
 }
 #[test]
-fn run_invalid_param_dest() {
+fn run_invalid_param_src() {
     let command = CopyCommand {
         term: Term::stdout(),
     };
@@ -36,5 +52,7 @@ fn run_invalid_param_dest() {
         replace: None,
         context: None,
     };
-    assert_that!(command.run(params)).is_err();
+    assert_that!(&command.run(params))
+        .is_err()
+        .is_equal_to(&SimpleError::new("validated"));
 }

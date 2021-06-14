@@ -11,7 +11,7 @@ use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandPa
 #[cfg(test)]
 mod test;
 
-struct CopyParams {
+pub struct CopyParams {
     source: PathBuf,
     destination: PathBuf,
     overwrite: Option<bool>,
@@ -41,7 +41,7 @@ struct Params {
     overwrite: Option<bool>,
 }
 
-struct CopyCommand {
+pub struct CopyCommand {
     term: Term,
 }
 
