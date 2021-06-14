@@ -20,6 +20,14 @@ pub struct CopyParams {
     overwrite: Option<bool>,
 }
 
+impl PartialEq for CopyParams {
+    fn eq(&self, other: &Self) -> bool {
+        return self.source == other.source
+            && self.destination == other.destination
+            && self.overwrite == other.overwrite;
+    }
+}
+
 impl OverwritableParams for CopyParams {
     fn source(&self) -> PathBuf {
         self.source.clone()

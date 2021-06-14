@@ -3,10 +3,8 @@ mod params {
     use std::path::PathBuf;
 
     use dialoguer::console::Term;
-    use spectral::assert_that;
-    use spectral::result::ResultAssertions;
 
-    use crate::command::copy::OverwritableCommand;
+    use crate::command::copy::{CopyParams, OverwritableCommand};
     use crate::{CopyCommand, ProcessedCommandParams};
 
     #[test]
@@ -22,7 +20,14 @@ mod params {
             replace: None,
             context: None,
         };
-        assert_that!(command.from(params)).is_ok();
+        assert_eq!(
+            command.from(params).unwrap(),
+            CopyParams {
+                source: Default::default(),
+                destination: Default::default(),
+                overwrite: None
+            }
+        )
     }
 
     #[test]
