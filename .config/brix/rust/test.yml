@@ -1,3 +1,3 @@
 file:
-  source: test.rs.txt
+  source: from.txt
   destination: 'output/tests/src/{module}.rs'

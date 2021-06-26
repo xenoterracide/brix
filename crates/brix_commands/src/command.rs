@@ -45,7 +45,7 @@ pub trait OverwritableCommand {
         Ok(())
     }
 
-    fn validate(&self, pcp: ProcessedCommandParams) -> Result<Self::Params, ValidationErrors>;
+    fn from(&self, pcp: ProcessedCommandParams) -> Result<Self::Params, ValidationErrors>;
 
     fn write_impl(&self, params: Self::Params) -> Result<(), SimpleError>;
 }
@@ -56,7 +56,7 @@ where
 {
     fn run(&self, pcp: ProcessedCommandParams) -> Result<(), SimpleError> {
         let params = self
-            .validate(pcp)
+            .from(pcp)
             .map_err(|err| SimpleError::with("validate", err))?;
 
         if !params.source().exists() {
