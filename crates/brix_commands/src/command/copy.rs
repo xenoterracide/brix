@@ -9,12 +9,23 @@ use validator::{Validate, ValidationErrors};
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
 
 #[cfg(test)]
-mod test;
+mod tests {
+    mod from;
+}
 
+#[derive(Debug)]
 pub struct CopyParams {
     source: PathBuf,
     destination: PathBuf,
     overwrite: Option<bool>,
+}
+
+impl PartialEq for CopyParams {
+    fn eq(&self, other: &Self) -> bool {
+        return self.source == other.source
+            && self.destination == other.destination
+            && self.overwrite == other.overwrite;
+    }
 }
 
 impl OverwritableParams for CopyParams {
@@ -59,7 +70,7 @@ impl OverwritableCommand for CopyCommand {
         self.term.clone()
     }
 
-    fn validate(&self, pcp: ProcessedCommandParams) -> Result<CopyParams, ValidationErrors> {
+    fn from(&self, pcp: ProcessedCommandParams) -> Result<CopyParams, ValidationErrors> {
         let cp = Params {
             source: pcp.source,
             destination: pcp.destination,
