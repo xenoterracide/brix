@@ -1,14 +1,13 @@
-use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 mod parsers;
 use parsers::ConfigParser;
 pub use parsers::YamlConfigParser;
 
-use brix_commands::CopyCommand;
 use brix_commands::{Command, ProcessedCommandParams};
+use brix_commands::{CopyCommand, SearchReplaceCommand};
 use brix_errors::BrixError;
 
 pub type ParserList = Vec<Box<dyn ConfigParser>>;
@@ -43,7 +42,10 @@ impl ConfigLoader {
         }
 
         if let None = parser {
-            panic!("File format not supported: {:?}", config_file);
+            return Err(BrixError::with(&format!(
+                "the file extension '.{}' is not supported for configs",
+                config_file.extension().unwrap().to_string_lossy()
+            )));
         }
 
         let config = parser.unwrap().parse(processed)?;
@@ -57,12 +59,13 @@ impl ConfigLoader {
             let key = command.keys().next().unwrap();
             let value = command.values().next().unwrap();
             let args = self.create_processed_args(value)?;
-            let command = match key.to_lowercase().as_str() {
-                "copy" => CopyCommand::new(),
+            let command: Box<dyn Command> = match key.to_lowercase().as_str() {
+                "copy" => Box::new(CopyCommand::new()),
+                "search_replace" => Box::new(SearchReplaceCommand::new()),
                 _ => panic!("Command `{}` not found!", key),
             };
 
-            list.push((Box::new(command), args));
+            list.push((command, args));
         }
 
         Ok(list)
@@ -79,29 +82,39 @@ impl ConfigLoader {
         let mut overwrite = None;
         let mut search = None;
         let mut replace = None;
+        let mut left_brace = None;
+        let mut right_brace = None;
 
         if let Some(raw_source) = &raw.source {
             source = Some(config.join(raw_source)); // Source is relative to config
         };
         if let Some(raw_destination) = &raw.destination {
-            destination = Some(Path::new(raw_destination).to_path_buf()); // Dest is absolute path
+            destination = Some(PathBuf::from(raw_destination)); // Dest is absolute path
         };
         if let Some(raw_overwrite) = raw.overwrite {
             overwrite = Some(raw_overwrite);
         };
         if let Some(raw_search) = &raw.search {
-            search = Some(Regex::new(&raw_search).unwrap());
+            search = Some(raw_search.clone());
         };
         if let Some(raw_replace) = &raw.replace {
             replace = Some(raw_replace.clone());
         };
+        if let Some(raw_left_brace) = &raw.left_brace {
+            left_brace = Some(raw_left_brace.clone());
+        }
+        if let Some(raw_right_brace) = &raw.right_brace {
+            right_brace = Some(raw_right_brace.clone());
+        }
 
         Ok(ProcessedCommandParams {
-            source: source,
-            destination: destination,
-            overwrite: overwrite,
-            search: search,
-            replace: replace,
+            source,
+            destination,
+            overwrite,
+            search,
+            replace,
+            left_brace,
+            right_brace,
             context: None,
         })
     }
@@ -124,4 +137,7 @@ struct RawCommandParams {
     overwrite: Option<bool>,
     search: Option<String>,
     replace: Option<String>,
+    left_brace: Option<String>,
+    right_brace: Option<String>,
+    context: Option<HashMap<String, String>>,
 }

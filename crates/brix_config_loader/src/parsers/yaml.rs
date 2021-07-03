@@ -10,7 +10,7 @@ const SUPPORTED_EXTENSIONS: [&str; 2] = ["yaml", "yml"];
 
 impl ConfigParser for YamlConfigParser {
     fn parse(&self, contents: &str) -> Result<RawConfig, BrixError> {
-        let config: RawConfig = serde_yaml::from_str(&contents).unwrap(); // TODO: Better handling
+        let config: RawConfig = serde_yaml::from_str(&contents)?; // TODO: Better handling
         Ok(config)
     }
 

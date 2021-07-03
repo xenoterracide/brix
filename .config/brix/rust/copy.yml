@@ -2,3 +2,4 @@ commands:
 - copy:
     source: test.rs.txt
     destination: output/{module}/test.rs
+    overwrite: true

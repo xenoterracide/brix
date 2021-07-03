@@ -1,8 +1,10 @@
-use clap::ArgMatches;
 use std::fs::{self, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process;
+
+use clap::ArgMatches;
+use colored::*;
 
 use brix_cli;
 use brix_config_loader::YamlConfigParser;
@@ -45,12 +47,33 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
     let processed = brix_processor::process(config.module.clone(), contents)?;
     let parsers: ParserList = vec![Box::new(YamlConfigParser {})];
     let mut loader = ConfigLoader::new(parsers);
-    let commands = loader.load(&declaration, &processed)?;
+    let commands = loader.load(&declaration, &processed).or_else(|err| {
+        return Err(BrixError::with(&format!(
+            "Error loading config at '{}':\n{}",
+            util::display_path(&declaration.to_string_lossy()),
+            err
+        )));
+    })?;
+    println!(
+        "{} {}",
+        "CONFIG".bright_blue(),
+        util::display_path(&declaration.to_string_lossy())
+    );
 
     for (command, args) in commands.into_iter() {
-        command.run(args).unwrap();
+        println!("{} {}", "RUNNING".green(), command.name());
+        if let Err(err) = command.run(args) {
+            eprintln!(
+                "Error running {} command in '{}'",
+                command.name(),
+                declaration.display()
+            );
+            eprintln!("{}", err);
+            process::exit(2);
+        }
     }
 
+    println!("----------\n{}", "DONE!".bright_green());
     process::exit(0);
 }
 
@@ -76,10 +99,7 @@ fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<PathBu
         let path = path.unwrap().path();
         if path.is_file() {
             let stem = path.file_stem().unwrap();
-            let ext = path.extension().unwrap();
-
-            // TODO: replace with supported config files
-            if name == stem && (ext == "yml" || ext == "yaml") {
+            if name == stem {
                 results.push(path);
             }
         }

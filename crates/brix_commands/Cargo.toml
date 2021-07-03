@@ -8,7 +8,6 @@ edition = "2018"
 log = "^0"
 brix_errors = { path = "../../crates/brix_errors" }
 regex = "^1"
-simple-error = "^0"
 validator = { version = "^0", features = ["derive"] }
 dialoguer = "^0"
 

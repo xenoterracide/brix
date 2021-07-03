@@ -27,6 +27,7 @@ brix_commands = { path = "crates/brix_commands" }
 brix_config_loader = { path = "crates/brix_config_loader" }
 brix_errors = { path = "crates/brix_errors" }
 brix_processor = { path = "crates/brix_processor" }
+colored = "2.0.0"
 
 [dev-dependencies.cargo-husky]
 version = "^1"
