@@ -18,8 +18,6 @@ mod params {
             overwrite: None,
             search: None,
             replace: None,
-            left_brace: None,
-            right_brace: None,
             context: None,
         };
         assert_eq!(
@@ -44,8 +42,6 @@ mod params {
             overwrite: None,
             search: None,
             replace: None,
-            left_brace: None,
-            right_brace: None,
             context: None,
         };
 

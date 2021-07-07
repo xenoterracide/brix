@@ -51,11 +51,11 @@ impl From<serde_yaml::Error> for BrixError {
     }
 }
 
-impl From<tinytemplate::error::Error> for BrixError {
-    fn from(err: tinytemplate::error::Error) -> BrixError {
+impl From<handlebars::RenderError> for BrixError {
+    fn from(err: handlebars::RenderError) -> BrixError {
         BrixError {
             kind: Some(BrixErrorKind::Template),
-            message: err.to_string(),
+            message: format!("{}", err),
         }
     }
 }

@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 use dialoguer::console::Term;
 use dialoguer::Confirm;
 use log::{debug, error, info};
+use serde::{Deserialize, Serialize};
 use validator::ValidationErrors;
 
 use brix_errors::BrixError;
@@ -107,14 +108,12 @@ pub trait OverwritableParams {
     fn overwrite(&self) -> Option<bool>;
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ProcessedCommandParams {
     pub source: Option<PathBuf>,
     pub destination: Option<PathBuf>,
     pub overwrite: Option<bool>,
     pub search: Option<String>,
     pub replace: Option<String>,
-    pub left_brace: Option<String>,
-    pub right_brace: Option<String>,
     pub context: Option<HashMap<String, String>>,
 }

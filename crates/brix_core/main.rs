@@ -3,31 +3,25 @@ use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process;
 
-use clap::ArgMatches;
 use colored::*;
 
-use brix_cli;
 use brix_config_loader::YamlConfigParser;
 use brix_config_loader::{ConfigLoader, ParserList};
 use brix_errors::BrixError;
 
-mod app;
-mod args;
-mod config;
 mod util;
-use config::Config;
 
 type Result<T> = std::result::Result<T, BrixError>;
 
 fn main() {
-    if let Err(err) = args::clap_matches().and_then(next) {
+    if let Err(err) = brix_cli::clap_matches().and_then(try_main) {
         eprintln!("{}", err);
         process::exit(2);
     }
 }
 
-fn next(matches: ArgMatches<'static>) -> Result<()> {
-    let config = Config::new(matches);
+fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
+    let config = brix_cli::Config::new(matches);
 
     let config_root = Path::new(&config.config_dir);
     let language_dir = Path::new(&config.language);
@@ -35,7 +29,7 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
 
     let found_module = module_from_config(&module_dir, &config);
     if found_module.is_err() {
-        brix_cli::brix_error(found_module.unwrap_err());
+        eprintln!("{}", found_module.unwrap_err());
         process::exit(2);
     }
 
@@ -44,10 +38,9 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-    let processed = brix_processor::process(config.module.clone(), contents)?;
     let parsers: ParserList = vec![Box::new(YamlConfigParser {})];
-    let mut loader = ConfigLoader::new(parsers);
-    let commands = loader.load(&declaration, &processed).or_else(|err| {
+    let mut loader = ConfigLoader::new(parsers, &config);
+    let commands = loader.load(&declaration, &contents).or_else(|err| {
         return Err(BrixError::with(&format!(
             "Error loading config at '{}':\n{}",
             util::display_path(&declaration.to_string_lossy()),
@@ -77,15 +70,15 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
     process::exit(0);
 }
 
-fn module_from_config(dir: &PathBuf, config: &Config) -> Result<PathBuf> {
+fn module_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<PathBuf> {
     let declaration = search_for_module_declaration(dir.to_str().unwrap(), &config.config_name)?;
 
     if declaration.is_none() {
-        brix_cli::error_and_quit(&format!(
+        return Err(BrixError::with(&format!(
             "Could not find module declaration for '{}' in {}",
             config.config_name,
             util::display_path(&dir.to_string_lossy())
-        ));
+        )));
     }
 
     Ok(declaration.unwrap())

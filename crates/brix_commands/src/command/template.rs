@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::Read;
 use std::path::PathBuf;
 
 use dialoguer::console::Term;
@@ -13,8 +15,6 @@ pub struct TemplateParams {
     source: PathBuf,
     destination: PathBuf,
     overwrite: Option<bool>,
-    left_brace: String,
-    right_brace: String,
     context: Option<HashMap<String, String>>,
 }
 
@@ -61,10 +61,6 @@ struct Params {
     #[validate(required)]
     destination: Option<PathBuf>,
     overwrite: Option<bool>,
-    #[validate(required)]
-    left_brace: Option<String>,
-    #[validate(required)]
-    right_brace: Option<String>,
     context: Option<HashMap<String, String>>,
 }
 
@@ -80,8 +76,6 @@ impl OverwritableCommand for TemplateCommand {
             source: pcp.source,
             destination: pcp.destination,
             overwrite: pcp.overwrite,
-            left_brace: pcp.left_brace,
-            right_brace: pcp.right_brace,
             context: pcp.context,
         };
         cp.validate()?;
@@ -89,19 +83,22 @@ impl OverwritableCommand for TemplateCommand {
             source: cp.source.unwrap(),
             destination: cp.destination.unwrap(),
             overwrite: cp.overwrite,
-            left_brace: cp.left_brace.unwrap(),
-            right_brace: cp.right_brace.unwrap(),
             context: cp.context,
         })
     }
 
     fn write_impl(&self, params: TemplateParams) -> Result<(), BrixError> {
-        debug!(
-            "templating '{}' with {}TEXT{}",
-            params.source.display(),
-            params.left_brace,
-            params.right_brace
-        );
+        let mut file = File::open(&params.source)?;
+        let mut contents = String::new();
+        file.read_to_string(&mut contents)?;
+
+        debug!("templating '{}'", params.source.display());
+        let context = params.context.unwrap();
+        let processed_context = brix_processor::create_context(context);
+        let result = brix_processor::process(contents, processed_context)?;
+
+        std::fs::write(params.destination, result)?;
+
         Ok(())
     }
 
