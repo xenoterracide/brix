@@ -6,4 +6,7 @@ edition = "2018"
 
 [dependencies]
 clap = "2.33.3"
-tinytemplate = "1.2.1"
+serde_yaml = "0.8.17"
+handlebars = "4.1.0"
+validator = "^0"
+regex = "^1"

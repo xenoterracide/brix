@@ -3,10 +3,10 @@ use std::path::PathBuf;
 
 use dialoguer::console::Term;
 use log::debug;
-use simple_error::{try_with, SimpleError};
 use validator::{Validate, ValidationErrors};
 
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
+use brix_errors::BrixError;
 
 #[cfg(test)]
 mod tests {
@@ -55,7 +55,13 @@ pub struct CopyCommand {
     term: Term,
 }
 
-impl CopyCommand {}
+impl CopyCommand {
+    pub fn new() -> Self {
+        Self {
+            term: Term::stderr(),
+        } // TODO: Control over stderr or stdout
+    }
+}
 
 impl OverwritableCommand for CopyCommand {
     type Params = CopyParams;
@@ -78,14 +84,18 @@ impl OverwritableCommand for CopyCommand {
         })
     }
 
-    fn write_impl(&self, params: CopyParams) -> Result<(), SimpleError> {
+    fn write_impl(&self, params: CopyParams) -> Result<(), BrixError> {
         debug!(
             "copying '{}' to '{}'",
             params.source.display(),
             params.destination.display()
         );
 
-        try_with!(copy(params.source, params.destination), "copy");
+        copy(params.source, params.destination)?;
         Ok(())
+    }
+
+    fn name_inner(&self) -> String {
+        String::from("copy")
     }
 }

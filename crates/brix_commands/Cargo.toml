@@ -5,13 +5,15 @@ authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>", "Caleb Cushi
 edition = "2018"
 
 [dependencies]
+brix_errors = { path = "../brix_errors" }
+brix_processor = { path = "../brix_processor" }
 log = "^0"
-brix_errors = { path = "../../crates/brix_errors" }
+serde = { version = "1.0.126", features = ["derive"] }
 regex = "^1"
-simple-error = "^0"
 validator = { version = "^0", features = ["derive"] }
 dialoguer = "^0"
 
 [dev-dependencies]
 spectral = "^0"
 pretty_assertions = "^0"
+maplit = "1.0.2"

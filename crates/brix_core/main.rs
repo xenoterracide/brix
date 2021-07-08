@@ -1,34 +1,27 @@
 use std::fs::{self, File};
-use std::io::{Read, Write};
+use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process;
 
-use clap::ArgMatches;
+use colored::*;
 
-use brix_cli;
-#[allow(unused_imports)]
-use brix_commands;
-use brix_config_loader::{self, Command};
+use brix_config_loader::YamlConfigParser;
+use brix_config_loader::{ConfigLoader, ParserList};
 use brix_errors::BrixError;
-use brix_processor;
-use config::Config;
 
-mod app;
-mod args;
-mod config;
 mod util;
 
 type Result<T> = std::result::Result<T, BrixError>;
 
 fn main() {
-    if let Err(err) = args::clap_matches().and_then(next) {
+    if let Err(err) = brix_cli::clap_matches().and_then(try_main) {
         eprintln!("{}", err);
         process::exit(2);
     }
 }
 
-fn next(matches: ArgMatches<'static>) -> Result<()> {
-    let config = Config::new(matches);
+fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
+    let config = brix_cli::Config::new(matches);
 
     let config_root = Path::new(&config.config_dir);
     let language_dir = Path::new(&config.language);
@@ -36,46 +29,56 @@ fn next(matches: ArgMatches<'static>) -> Result<()> {
 
     let found_module = module_from_config(&module_dir, &config);
     if found_module.is_err() {
-        brix_cli::brix_error(found_module.unwrap_err());
+        eprintln!("{}", found_module.unwrap_err());
         process::exit(2);
     }
 
     let declaration = found_module.unwrap();
-    let mut file = File::open(declaration)?;
+    let mut file = File::open(declaration.clone())?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
 
-    let processed = brix_processor::process(config.module.clone(), contents)?;
-    let command = brix_config_loader::load(&processed);
+    let parsers: ParserList = vec![Box::new(YamlConfigParser {})];
+    let mut loader = ConfigLoader::new(parsers, &config);
+    let commands = loader.load(&declaration, &contents).or_else(|err| {
+        return Err(BrixError::with(&format!(
+            "Error loading config at '{}':\n{}",
+            util::display_path(&declaration.to_string_lossy()),
+            err
+        )));
+    })?;
+    println!(
+        "{} {}",
+        "CONFIG".bright_blue(),
+        util::display_path(&declaration.to_string_lossy())
+    );
 
-    // TODO: handle invalid config loading in loader instead of this
-    if let Command::Empty = command {
-        eprintln!("No command found for config file!");
-    }
-
-    let result = match command {
-        Command::TemplateAndCopy(source, destination) => {
-            template_and_copy(&module_dir, &source, &destination)
+    for (command, args) in commands.into_iter() {
+        println!("{} {}", "RUNNING".green(), command.name());
+        if let Err(err) = command.run(args) {
+            eprintln!(
+                "Error running {} command in '{}'",
+                command.name(),
+                declaration.display()
+            );
+            eprintln!("{}", err);
+            process::exit(2);
         }
-        _ => Ok(()),
-    };
-
-    if result.is_err() {
-        brix_cli::brix_error(result.unwrap_err());
     }
 
+    println!("----------\n{}", "DONE!".bright_green());
     process::exit(0);
 }
 
-fn module_from_config(dir: &PathBuf, config: &Config) -> Result<PathBuf> {
+fn module_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<PathBuf> {
     let declaration = search_for_module_declaration(dir.to_str().unwrap(), &config.config_name)?;
 
     if declaration.is_none() {
-        brix_cli::error_and_quit(&format!(
+        return Err(BrixError::with(&format!(
             "Could not find module declaration for '{}' in {}",
             config.config_name,
             util::display_path(&dir.to_string_lossy())
-        ));
+        )));
     }
 
     Ok(declaration.unwrap())
@@ -89,10 +92,7 @@ fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<PathBu
         let path = path.unwrap().path();
         if path.is_file() {
             let stem = path.file_stem().unwrap();
-            let ext = path.extension().unwrap();
-
-            // TODO: replace with supported config files
-            if name == stem && (ext == "yml" || ext == "yaml") {
+            if name == stem {
                 results.push(path);
             }
         }
@@ -105,20 +105,4 @@ fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<PathBu
     }
 
     Ok(None)
-}
-
-// TODO: perhaps put this in a separate module
-fn template_and_copy(module_dir: &Path, source: &str, dest: &str) -> Result<()> {
-    let source_path = module_dir.join(source);
-    let contents = fs::read_to_string(source_path)?;
-
-    let path = Path::new(dest);
-    let parent = path.parent().unwrap(); // Fix
-
-    fs::create_dir_all(parent).unwrap();
-    let mut file = File::create(dest).unwrap();
-    file.write_all(contents.as_bytes()).unwrap();
-
-    println!("Done!");
-    Ok(())
 }

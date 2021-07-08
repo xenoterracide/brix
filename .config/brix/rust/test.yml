@@ -1,3 +1,0 @@
-file:
-  source: from.txt
-  destination: 'output/tests/src/{module}.rs'

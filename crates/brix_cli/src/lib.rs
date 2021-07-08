@@ -1,15 +1,9 @@
-use std::process;
-
-use colour::red_ln;
-
 use brix_errors::BrixError;
 
-pub fn error_and_quit(err: &str) {
-    red_ln!(err);
-    process::exit(2);
-}
+mod app;
+mod args;
+mod config;
 
-pub fn brix_error(err: BrixError) {
-    red_ln!("{}", err);
-    process::exit(2);
-}
+pub use args::clap_matches;
+pub use clap::ArgMatches;
+pub use config::Config;

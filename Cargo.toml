@@ -26,15 +26,10 @@ brix_cli = { path = "crates/brix_cli" }
 brix_commands = { path = "crates/brix_commands" }
 brix_config_loader = { path = "crates/brix_config_loader" }
 brix_errors = { path = "crates/brix_errors" }
-brix_processor = { path = "crates/brix_processor" }
+colored = "2.0.0"
 
 [dev-dependencies.cargo-husky]
 version = "^1"
 default-features = false # Disable features which are enabled by default
 features = ["precommit-hook", "run-cargo-fmt", "run-for-all"]
-
-[dependencies.clap]
-version = "2.33.3"
-default-features = false
-features = ["suggestions", "color"]
 

@@ -1,25 +1,31 @@
+use std::collections::HashMap;
 use std::format;
 use std::fs::create_dir_all;
-use std::iter::Map;
 use std::path::{Path, PathBuf};
 
 use dialoguer::console::Term;
 use dialoguer::Confirm;
 use log::{debug, error, info};
-use regex::Regex;
-use simple_error::{simple_error, SimpleError};
+use serde::{Deserialize, Serialize};
 use validator::ValidationErrors;
 
+use brix_errors::BrixError;
+
 pub mod copy;
+pub mod search_replace;
+pub mod template;
 
 pub trait Command {
-    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), SimpleError>;
+    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), BrixError>;
+    fn name(&self) -> String;
 }
 
-pub trait OverwritableCommand {
+pub trait OverwritableCommand: Command {
     type Params: OverwritableParams + 'static;
 
     fn term(&self) -> Term;
+
+    fn name_inner(&self) -> String;
 
     fn ask_to_write(&self, path: &Path) -> bool {
         let res = Confirm::new()
@@ -35,34 +41,32 @@ pub trait OverwritableCommand {
         }
     }
 
-    fn write(&self, params: Self::Params) -> Result<(), SimpleError> {
+    fn write(&self, params: Self::Params) -> Result<(), BrixError> {
         info!("writing: '{}'", params.destination().display());
         self.write_impl(params)
     }
 
-    fn skip_write(&self, path: &Path) -> Result<(), SimpleError> {
+    fn skip_write(&self, path: &Path) -> Result<(), BrixError> {
         info!("skipping: '{}'", path.display());
         Ok(())
     }
 
     fn from(&self, pcp: ProcessedCommandParams) -> Result<Self::Params, ValidationErrors>;
 
-    fn write_impl(&self, params: Self::Params) -> Result<(), SimpleError>;
+    fn write_impl(&self, params: Self::Params) -> Result<(), BrixError>;
 }
 
 impl<T> Command for T
 where
     T: OverwritableCommand,
 {
-    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), SimpleError> {
-        let params = self
-            .from(pcp)
-            .map_err(|err| SimpleError::with("validate", err))?;
+    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), BrixError> {
+        let params = self.from(pcp)?;
 
         if !params.source().exists() {
-            return Err(simple_error!(format!(
+            return Err(BrixError::with(&format!(
                 "source '{}' does not exist",
-                params.source().display()
+                &params.source().display()
             )));
         }
 
@@ -70,12 +74,13 @@ where
         let parent = &dest.parent();
         if !(parent.is_some() && parent.unwrap().exists()) && parent.is_some() {
             debug!("creating directory '{}'", parent.unwrap().display());
-            create_dir_all(parent.unwrap()).map_err(|err| {
-                SimpleError::with(
-                    &*format!("unable to create '{}'", parent.unwrap().display()),
-                    err,
-                )
-            })?;
+            if let Err(e) = create_dir_all(parent.unwrap()) {
+                return Err(BrixError::with(&format!(
+                    "unable to create '{}': {}",
+                    parent.unwrap().display(),
+                    e
+                )));
+            }
         }
 
         if params.overwrite().is_some() {
@@ -88,8 +93,12 @@ where
         }
         if self.ask_to_write(dest) {
             return self.write(params);
-        }
-        self.write(params)
+        };
+        return self.skip_write(dest);
+    }
+
+    fn name(&self) -> String {
+        self.name_inner()
     }
 }
 
@@ -99,11 +108,12 @@ pub trait OverwritableParams {
     fn overwrite(&self) -> Option<bool>;
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ProcessedCommandParams {
     pub source: Option<PathBuf>,
     pub destination: Option<PathBuf>,
     pub overwrite: Option<bool>,
-    pub search: Option<Regex>,
+    pub search: Option<String>,
     pub replace: Option<String>,
-    pub context: Option<Map<String, String>>,
+    pub context: Option<HashMap<String, String>>,
 }
