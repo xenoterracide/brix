@@ -99,6 +99,7 @@ dependencies = [
  "brix_processor",
  "dialoguer",
  "log",
+ "maplit",
  "pretty_assertions",
  "regex",
  "serde",

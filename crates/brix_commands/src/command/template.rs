@@ -10,6 +10,12 @@ use validator::{Validate, ValidationErrors};
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
 use brix_errors::BrixError;
 
+#[cfg(test)]
+mod tests {
+    mod invalid;
+    mod run;
+}
+
 #[derive(Debug)]
 pub struct TemplateParams {
     source: PathBuf,

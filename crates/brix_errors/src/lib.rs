@@ -3,8 +3,8 @@ use std::io;
 
 #[derive(Debug)]
 pub struct BrixError {
-    kind: Option<BrixErrorKind>,
-    message: String,
+    pub kind: Option<BrixErrorKind>,
+    pub message: String,
 }
 
 impl BrixError {
@@ -16,7 +16,7 @@ impl BrixError {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum BrixErrorKind {
     Io,
     Cli,

@@ -27,3 +27,17 @@ impl ContextMap {
         merged
     }
 }
+
+pub fn cli_config_to_map(config: &brix_cli::Config) -> HashMap<String, String> {
+    macro_rules! s {
+        ($st:expr) => {
+            String::from($st)
+        };
+    }
+
+    let mut map = HashMap::new();
+    map.insert(s!("language"), s!(&config.language));
+    map.insert(s!("module"), s!(&config.module));
+    map.insert(s!("project"), s!(&config.project));
+    map
+}

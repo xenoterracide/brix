@@ -9,6 +9,12 @@ use validator::Validate;
 use crate::command::{Command, ProcessedCommandParams};
 use brix_errors::BrixError;
 
+#[cfg(test)]
+mod tests {
+    mod invalid;
+    mod run;
+}
+
 #[derive(Debug)]
 pub struct SearchReplaceParams {
     destination: PathBuf,
@@ -53,10 +59,11 @@ impl Command for SearchReplaceCommand {
 
         let dest = cp.destination.unwrap();
         info!("reading to string from '{}'", dest.clone().display());
-        let data = fs::read_to_string(dest.clone()).or_else(|_err| {
+        let data = fs::read_to_string(dest.clone()).or_else(|err| {
             return Err(BrixError::with(&format!(
-                "unable to read file '{}'",
-                dest.display()
+                "unable to read file '{}': {}",
+                dest.display(),
+                err
             )));
         })?;
 

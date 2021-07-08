@@ -16,3 +16,4 @@ dialoguer = "^0"
 [dev-dependencies]
 spectral = "^0"
 pretty_assertions = "^0"
+maplit = "1.0.2"
