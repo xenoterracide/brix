@@ -4,9 +4,9 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 use brix_commands::{CopyCommand, SearchReplaceCommand, TemplateCommand};
+use brix_common::context::{cli_config_to_map, ContextMap};
 use brix_errors::BrixError;
 
-use crate::context::{cli_config_to_map, ContextMap};
 use crate::ConfigLoader;
 use crate::{Command, CommandList, RawConfig};
 use crate::{ProcessedCommandParams, RawCommandParams};
@@ -53,10 +53,11 @@ impl<'a> ConfigLoader<'a> {
             // Merge contexts together
             let context = context_map.do_merge();
 
-            let processor_context = brix_processor::create_context(context);
+            let processor_context = brix_processor::create_context(context.clone());
             let res = brix_processor::process(json.to_string(), processor_context)?;
             let raw_args: RawCommandParams = serde_json::from_str(&res).unwrap();
-            let args = self.create_processed_args(&raw_args)?;
+            let mut args = self.create_processed_args(&raw_args)?;
+            args.context = Some(context);
 
             list.push((command, args));
         }
@@ -68,6 +69,14 @@ impl<'a> ConfigLoader<'a> {
         &self,
         raw: &RawCommandParams,
     ) -> Result<ProcessedCommandParams, BrixError> {
+        macro_rules! lf {
+            ($val:expr) => {{
+                let mut val = $val;
+                val = val.replace("\\n", "\n");
+                val.replace("\\t", "\t")
+            }};
+        }
+
         let config = self.config_dir.as_ref().unwrap();
 
         let mut source = None;
@@ -87,10 +96,10 @@ impl<'a> ConfigLoader<'a> {
             overwrite = Some(raw_overwrite);
         }
         if let Some(raw_search) = &raw.search {
-            search = Some(raw_search.clone());
+            search = Some(lf!(raw_search.clone()));
         }
         if let Some(raw_replace) = &raw.replace {
-            replace = Some(raw_replace.clone());
+            replace = Some(lf!(raw_replace.clone()));
         }
         if let Some(raw_context) = &raw.context {
             context = Some(raw_context.clone());

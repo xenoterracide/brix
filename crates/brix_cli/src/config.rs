@@ -2,7 +2,7 @@ use clap::ArgMatches;
 use std::borrow::Cow;
 use std::fmt::{self, Display, Formatter};
 
-use crate::args;
+use crate::app;
 
 pub struct Config {
     pub language: String,
@@ -19,12 +19,12 @@ impl Config {
     /// Parses matches and sets into config
     #[rustfmt::skip]
     pub fn new(matches: ArgMatches<'static>) -> Self {
-        let language = matches.value_of_lossy(args::LANGUAGE).unwrap().to_string();
-        let config_name = matches.value_of_lossy(args::CONFIG_NAME).unwrap().to_string();
-        let project = matches.value_of_lossy(args::PROJECT).unwrap().to_string();
-        let module = matches.value_of_lossy(args::MODULE).unwrap().to_string();
+        let language = matches.value_of_lossy(app::LANGUAGE).unwrap().to_string();
+        let config_name = matches.value_of_lossy(app::CONFIG_NAME).unwrap().to_string();
+        let project = matches.value_of_lossy(app::PROJECT).unwrap().to_string();
+        let module = matches.value_of_lossy(app::MODULE).unwrap().to_string();
 
-        let config_dir = matches.value_of_lossy(args::CONFIG_DIR).unwrap_or(Cow::from(".config/brix")).to_string();
+        let config_dir = matches.value_of_lossy(app::CONFIG_DIR).unwrap_or(Cow::from(".config/brix")).to_string();
 
         Self {
             raw_matches: matches,

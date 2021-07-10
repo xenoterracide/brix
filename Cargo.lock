@@ -73,13 +73,14 @@ dependencies = [
 
 [[package]]
 name = "brix"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "brix_cli",
  "brix_commands",
  "brix_config_loader",
  "brix_errors",
  "cargo-husky",
+ "clap",
  "colored",
 ]
 
@@ -89,6 +90,7 @@ version = "0.1.0"
 dependencies = [
  "brix_errors",
  "clap",
+ "dialoguer",
 ]
 
 [[package]]
@@ -108,11 +110,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "brix_common"
+version = "0.1.0"
+dependencies = [
+ "brix_cli",
+]
+
+[[package]]
 name = "brix_config_loader"
 version = "0.1.0"
 dependencies = [
  "brix_cli",
  "brix_commands",
+ "brix_common",
  "brix_errors",
  "brix_processor",
  "difflib",

@@ -7,6 +7,7 @@ edition = "2018"
 [dependencies]
 brix_cli = { path = "../brix_cli" }
 brix_commands = { path = "../brix_commands" }
+brix_common = { path = "../brix_common" }
 brix_errors = { path = "../brix_errors" }
 brix_processor = { path = "../brix_processor" }
 serde = { version = "1.0.126", features = ["derive"] }
