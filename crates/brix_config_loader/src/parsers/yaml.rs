@@ -18,4 +18,8 @@ impl ConfigParser for YamlConfigParser {
         let ext = path.extension().unwrap();
         SUPPORTED_EXTENSIONS.contains(&ext.to_str().unwrap())
     }
+
+    fn extensions(&self) -> Vec<&str> {
+        SUPPORTED_EXTENSIONS.to_vec()
+    }
 }

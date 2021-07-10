@@ -99,7 +99,7 @@ impl OverwritableCommand for TemplateCommand {
         file.read_to_string(&mut contents)?;
 
         debug!("templating '{}'", params.source.display());
-        let context = params.context.unwrap();
+        let context = params.context.unwrap_or(HashMap::new());
         let processed_context = brix_processor::create_context(context);
         let result = brix_processor::process(contents, processed_context)?;
 

@@ -1,7 +1,7 @@
-use std::fs::{self, File};
-use std::io::Read;
+use std::fs;
 use std::path::{Path, PathBuf};
 use std::process;
+use std::time::Instant;
 
 use colored::*;
 
@@ -27,30 +27,30 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
     let language_dir = Path::new(&config.language);
     let module_dir = config_root.join(language_dir);
 
-    let found_module = module_from_config(&module_dir, &config);
-    if found_module.is_err() {
-        eprintln!("{}", found_module.unwrap_err());
+    let found_modules = modules_from_config(&module_dir, &config);
+    if found_modules.is_err() {
+        eprintln!("{}", found_modules.unwrap_err());
         process::exit(2);
     }
 
-    let declaration = found_module.unwrap();
-    let mut file = File::open(declaration.clone())?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-
+    let declarations = found_modules.unwrap();
     let parsers: ParserList = vec![Box::new(YamlConfigParser {})];
     let mut loader = ConfigLoader::new(parsers, &config);
-    let commands = loader.load(&declaration, &contents).or_else(|err| {
+    let config_file = loader.load(declarations)?;
+
+    let start = Instant::now();
+    let commands = loader.run().or_else(|err| {
         return Err(BrixError::with(&format!(
             "Error loading config at '{}':\n{}",
-            util::display_path(&declaration.to_string_lossy()),
+            util::display_path(&config_file.to_string_lossy()),
             err
         )));
     })?;
+
     println!(
         "{} {}",
         "CONFIG".bright_blue(),
-        util::display_path(&declaration.to_string_lossy())
+        util::display_path(&config_file.to_string_lossy())
     );
 
     for (command, args) in commands.into_iter() {
@@ -59,21 +59,26 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
             eprintln!(
                 "Error running {} command in '{}'",
                 command.name(),
-                declaration.display()
+                config_file.display()
             );
             eprintln!("{}", err);
             process::exit(2);
         }
     }
+    let elapsed = start.elapsed();
 
-    println!("----------\n{}", "DONE!".bright_green());
+    println!(
+        "----------\n{} in {}ms",
+        "DONE!".bright_green(),
+        elapsed.as_millis()
+    );
     process::exit(0);
 }
 
-fn module_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<PathBuf> {
-    let declaration = search_for_module_declaration(dir.to_str().unwrap(), &config.config_name)?;
+fn modules_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<Vec<PathBuf>> {
+    let declarations = search_for_module_declarations(dir.to_str().unwrap(), &config.config_name)?;
 
-    if declaration.is_none() {
+    if declarations.len() == 0 {
         return Err(BrixError::with(&format!(
             "Could not find module declaration for '{}' in {}",
             config.config_name,
@@ -81,10 +86,10 @@ fn module_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<PathBu
         )));
     }
 
-    Ok(declaration.unwrap())
+    Ok(declarations)
 }
 
-fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<PathBuf>> {
+fn search_for_module_declarations(path: &str, name: &str) -> Result<Vec<PathBuf>> {
     let paths = fs::read_dir(path)?;
     let mut results = Vec::new();
 
@@ -98,11 +103,5 @@ fn search_for_module_declaration(path: &str, name: &str) -> Result<Option<PathBu
         }
     }
 
-    // For now, just select the first match, but in the future be aware
-    // that the user might specify an extension they want to use other another
-    if results.len() > 0 {
-        return Ok(Some(results.get(0).unwrap().to_path_buf()));
-    }
-
-    Ok(None)
+    Ok(results)
 }
