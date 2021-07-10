@@ -1,6 +1,6 @@
 [package]
 name = "brix"
-version = "0.1.0"
+version = "0.3.0"
 authors = [
   "Miapolis <41233357+Miapolis@users.noreply.github.com>",
   "Caleb Cushing <xenoterracide@gmail.com>"
