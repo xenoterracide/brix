@@ -74,8 +74,8 @@ impl From<validator::ValidationErrors> for BrixError {
     }
 }
 
-impl From<regex::Error> for BrixError {
-    fn from(err: regex::Error) -> BrixError {
+impl From<fancy_regex::Error> for BrixError {
+    fn from(err: fancy_regex::Error) -> BrixError {
         BrixError {
             kind: None,
             message: format!("{}", err),

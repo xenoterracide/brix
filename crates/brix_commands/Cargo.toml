@@ -9,7 +9,7 @@ brix_errors = { path = "../brix_errors" }
 brix_processor = { path = "../brix_processor" }
 log = "^0"
 serde = { version = "1.0.126", features = ["derive"] }
-regex = "^1"
+fancy-regex = "0.7.0"
 validator = { version = "^0", features = ["derive"] }
 dialoguer = "^0"
 

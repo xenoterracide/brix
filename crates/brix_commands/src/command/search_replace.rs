@@ -2,8 +2,8 @@ use std::fs::{self, File};
 use std::io::Write;
 use std::path::PathBuf;
 
+use fancy_regex::Regex;
 use log::info;
-use regex::Regex;
 use validator::Validate;
 
 use crate::command::{Command, ProcessedCommandParams};
