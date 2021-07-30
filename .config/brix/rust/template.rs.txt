@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     #[test]
-    fn {{function}}() {
+    fn {{to-case "snake" function}}() {
         assert_eq!(10 + 10, {{result}});
     }
 }

@@ -164,9 +164,11 @@ name = "brix_processor"
 version = "0.1.0"
 dependencies = [
  "brix_errors",
+ "convert_case",
  "handlebars",
  "serde",
  "serde_json",
+ "titlecase",
 ]
 
 [[package]]
@@ -233,6 +235,12 @@ dependencies = [
  "unicode-width",
  "winapi",
 ]
+
+[[package]]
+name = "convert_case"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6245d59a3e82a7fc217c5828a6692dbc6dfb63a0c8c90495621f7b9d79704a0e"
 
 [[package]]
 name = "ctor"
@@ -892,6 +900,16 @@ name = "tinyvec_macros"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
+
+[[package]]
+name = "titlecase"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f565e410cfc24c2f2a89960b023ca192689d7f77d3f8d4f4af50c2d8affe1117"
+dependencies = [
+ "lazy_static",
+ "regex",
+]
 
 [[package]]
 name = "typenum"
