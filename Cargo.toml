@@ -25,8 +25,10 @@ members = [
 [dependencies]
 brix_cli = { path = "crates/brix_cli" }
 brix_commands = { path = "crates/brix_commands" }
+brix_common = { path = "crates/brix_common" }
 brix_config_loader = { path = "crates/brix_config_loader" }
 brix_errors = { path = "crates/brix_errors" }
+brix_processor = { path = "crates/brix_processor" }
 colored = "2.0.0"
 
 [build-dependencies]

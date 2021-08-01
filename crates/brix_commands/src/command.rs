@@ -9,6 +9,7 @@ use log::{debug, error, info};
 use serde::{Deserialize, Serialize};
 use validator::ValidationErrors;
 
+use brix_common::AppContext;
 use brix_errors::BrixError;
 
 pub mod copy;
@@ -16,7 +17,7 @@ pub mod search_replace;
 pub mod template;
 
 pub trait Command {
-    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), BrixError>;
+    fn run(&self, pcp: ProcessedCommandParams, app_context: &AppContext) -> Result<(), BrixError>;
     fn name(&self) -> String;
 }
 
@@ -41,9 +42,9 @@ pub trait OverwritableCommand: Command {
         }
     }
 
-    fn write(&self, params: Self::Params) -> Result<(), BrixError> {
+    fn write(&self, params: Self::Params, app_context: &AppContext) -> Result<(), BrixError> {
         info!("writing: '{}'", params.destination().display());
-        self.write_impl(params)
+        self.write_impl(params, app_context)
     }
 
     fn skip_write(&self, path: &Path) -> Result<(), BrixError> {
@@ -53,14 +54,14 @@ pub trait OverwritableCommand: Command {
 
     fn from(&self, pcp: ProcessedCommandParams) -> Result<Self::Params, ValidationErrors>;
 
-    fn write_impl(&self, params: Self::Params) -> Result<(), BrixError>;
+    fn write_impl(&self, params: Self::Params, app_context: &AppContext) -> Result<(), BrixError>;
 }
 
 impl<T> Command for T
 where
     T: OverwritableCommand,
 {
-    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), BrixError> {
+    fn run(&self, pcp: ProcessedCommandParams, app_context: &AppContext) -> Result<(), BrixError> {
         let params = self.from(pcp)?;
 
         if !params.source().exists() {
@@ -86,13 +87,13 @@ where
         if params.overwrite().is_some() {
             let overwrite = params.overwrite().unwrap();
             if overwrite {
-                return self.write(params);
+                return self.write(params, app_context);
             } else if dest.exists() {
                 return self.skip_write(dest);
             }
         }
         if self.ask_to_write(dest) {
-            return self.write(params);
+            return self.write(params, app_context);
         };
         return self.skip_write(dest);
     }

@@ -6,3 +6,4 @@ edition = "2018"
 
 [dependencies]
 brix_cli = { path = "../brix_cli" }
+brix_processor = { path = "../brix_processor" }

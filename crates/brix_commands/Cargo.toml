@@ -5,6 +5,7 @@ authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>", "Caleb Cushi
 edition = "2018"
 
 [dependencies]
+brix_common = { path = "../brix_common" }
 brix_errors = { path = "../brix_errors" }
 brix_processor = { path = "../brix_processor" }
 log = "^0"

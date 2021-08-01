@@ -7,6 +7,7 @@ use log::info;
 use validator::Validate;
 
 use crate::command::{Command, ProcessedCommandParams};
+use brix_common::AppContext;
 use brix_errors::BrixError;
 
 #[cfg(test)]
@@ -49,7 +50,7 @@ impl SearchReplaceCommand {
 }
 
 impl Command for SearchReplaceCommand {
-    fn run(&self, pcp: ProcessedCommandParams) -> Result<(), BrixError> {
+    fn run(&self, pcp: ProcessedCommandParams, _app_context: &AppContext) -> Result<(), BrixError> {
         let cp = Params {
             destination: pcp.destination,
             search: pcp.search,

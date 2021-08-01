@@ -5,9 +5,11 @@ use std::time::Instant;
 
 use colored::*;
 
+use brix_common::AppContext;
 use brix_config_loader::YamlConfigParser;
 use brix_config_loader::{ConfigLoader, ParserList};
 use brix_errors::BrixError;
+use brix_processor::ProcessorCore;
 
 mod util;
 
@@ -38,8 +40,12 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
     let mut loader = ConfigLoader::new(parsers, &config);
     let config_file = loader.load(declarations)?;
 
+    // Create the app context
+    let processor = ProcessorCore::new();
+    let app_context = AppContext { processor };
+
     let start = Instant::now();
-    let commands = loader.run().or_else(|err| {
+    let commands = loader.run(&app_context).or_else(|err| {
         return Err(BrixError::with(&format!(
             "Error loading config at '{}':\n{}",
             util::display_path(&config_file.to_string_lossy()),
@@ -55,7 +61,7 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
 
     for (command, args) in commands.into_iter() {
         println!("{} {}", "RUNNING".green(), command.name());
-        if let Err(err) = command.run(args) {
+        if let Err(err) = command.run(args, &app_context) {
             eprintln!(
                 "Error running {} command in '{}'",
                 command.name(),

@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 use brix_commands::{CopyCommand, SearchReplaceCommand, TemplateCommand};
 use brix_common::context::{cli_config_to_map, ContextMap};
+use brix_common::AppContext;
 use brix_errors::BrixError;
 
 use crate::ConfigLoader;
@@ -16,7 +17,11 @@ lazy_static! {
 }
 
 impl<'a> ConfigLoader<'a> {
-    pub fn process(&self, config: &RawConfig) -> Result<CommandList, BrixError> {
+    pub fn process(
+        &self,
+        config: &RawConfig,
+        app_context: &AppContext,
+    ) -> Result<CommandList, BrixError> {
         let mut list = CommandList::new();
 
         for command in config.commands.iter() {
@@ -54,7 +59,9 @@ impl<'a> ConfigLoader<'a> {
             let context = context_map.do_merge();
 
             let processor_context = brix_processor::create_context(context.clone());
-            let res = brix_processor::process(json.to_string(), processor_context)?;
+            let res = app_context
+                .processor
+                .process(json.to_string(), processor_context)?;
             let raw_args: RawCommandParams = serde_json::from_str(&res).unwrap();
             let mut args = self.create_processed_args(&raw_args)?;
             args.context = Some(context);

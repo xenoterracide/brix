@@ -3,14 +3,19 @@ use std::path::PathBuf;
 
 use crate::command::Command;
 use crate::{ProcessedCommandParams, SearchReplaceCommand};
+use brix_common::AppContext;
+use brix_processor::ProcessorCore;
 
 macro_rules! do_test {
     ($path:expr, $search:expr, $replace:expr, $assertion:expr) => {{
+        let processor = ProcessorCore::new();
+        let command = SearchReplaceCommand::new();
+        let context = AppContext { processor };
+
         let path = PathBuf::from("src/command/search_replace").join($path);
         let contents = read_to_string(path.clone()).unwrap();
         let args = create_args!(path.clone(), $search, $replace);
-        let command = SearchReplaceCommand::new();
-        command.run(args).unwrap();
+        command.run(args, &context).unwrap();
 
         let result = read_to_string(path.clone()).unwrap();
         // Ensure file is reverted to its original state

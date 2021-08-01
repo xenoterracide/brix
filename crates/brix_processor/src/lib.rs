@@ -9,17 +9,24 @@ use std::collections::HashMap;
 use brix_errors::BrixError;
 mod helpers;
 
-pub fn process(text: String, context: Map<String, Json>) -> Result<String, BrixError> {
-    let mut handlebars = Handlebars::new();
-    // TODO: perhaps store this in a struct of some sort so that the helpers aren't registered
-    // every time the user runs a template command
-    handlebars.register_helper("to-upper", Box::new(helpers::ToUpperHelper));
-    handlebars.register_helper("to-lower", Box::new(helpers::ToLowerHelper));
-    handlebars.register_helper("to-title", Box::new(helpers::ToTitleHelper));
-    handlebars.register_helper("to-case", Box::new(helpers::ToCaseHelper));
+pub struct ProcessorCore<'a> {
+    handlebars: handlebars::Handlebars<'a>,
+}
 
-    let result = handlebars.render_template(&text, &context)?;
-    Ok(result)
+impl<'a> ProcessorCore<'a> {
+    pub fn new() -> Self {
+        let mut handlebars = Handlebars::new();
+        handlebars.register_helper("to-upper", Box::new(helpers::ToUpperHelper));
+        handlebars.register_helper("to-lower", Box::new(helpers::ToLowerHelper));
+        handlebars.register_helper("to-title", Box::new(helpers::ToTitleHelper));
+        handlebars.register_helper("to-case", Box::new(helpers::ToCaseHelper));
+        Self { handlebars }
+    }
+
+    pub fn process(&self, text: String, context: Map<String, Json>) -> Result<String, BrixError> {
+        let result = self.handlebars.render_template(&text, &context)?;
+        Ok(result)
+    }
 }
 
 pub fn create_context(data: HashMap<String, String>) -> Map<String, Json> {

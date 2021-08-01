@@ -10,6 +10,7 @@ pub use parsers::YamlConfigParser;
 
 use brix_cli::select::do_select;
 use brix_commands::{Command, ProcessedCommandParams};
+use brix_common::AppContext;
 use brix_errors::BrixError;
 
 pub type ParserList = Vec<Box<dyn ConfigParser>>;
@@ -70,7 +71,7 @@ impl<'a> ConfigLoader<'a> {
         Ok(self.config_file.as_ref().unwrap().clone())
     }
 
-    pub fn run(&self) -> Result<CommandList, BrixError> {
+    pub fn run(&self, app_context: &AppContext) -> Result<CommandList, BrixError> {
         let mut parser: Option<&Box<dyn ConfigParser>> = None;
 
         for parser_opt in self.parsers.iter() {
@@ -82,7 +83,7 @@ impl<'a> ConfigLoader<'a> {
 
         let contents = fs::read_to_string(self.config_file.as_ref().unwrap())?;
         let config = parser.unwrap().parse(&contents)?;
-        self.process(&config)
+        self.process(&config, app_context)
     }
 }
 

@@ -8,6 +8,7 @@ use log::debug;
 use validator::{Validate, ValidationErrors};
 
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
+use brix_common::AppContext;
 use brix_errors::BrixError;
 
 #[cfg(test)]
@@ -93,7 +94,11 @@ impl OverwritableCommand for TemplateCommand {
         })
     }
 
-    fn write_impl(&self, params: TemplateParams) -> Result<(), BrixError> {
+    fn write_impl(
+        &self,
+        params: TemplateParams,
+        app_context: &AppContext,
+    ) -> Result<(), BrixError> {
         let mut file = File::open(&params.source)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
@@ -101,7 +106,7 @@ impl OverwritableCommand for TemplateCommand {
         debug!("templating '{}'", params.source.display());
         let context = params.context.unwrap_or(HashMap::new());
         let processed_context = brix_processor::create_context(context);
-        let result = brix_processor::process(contents, processed_context)?;
+        let result = app_context.processor.process(contents, processed_context)?;
 
         std::fs::write(params.destination, result)?;
 

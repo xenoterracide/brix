@@ -92,8 +92,10 @@ version = "0.3.0"
 dependencies = [
  "brix_cli",
  "brix_commands",
+ "brix_common",
  "brix_config_loader",
  "brix_errors",
+ "brix_processor",
  "cargo-husky",
  "clap",
  "colored",
@@ -112,6 +114,7 @@ dependencies = [
 name = "brix_commands"
 version = "0.1.0"
 dependencies = [
+ "brix_common",
  "brix_errors",
  "brix_processor",
  "dialoguer",
@@ -129,6 +132,7 @@ name = "brix_common"
 version = "0.1.0"
 dependencies = [
  "brix_cli",
+ "brix_processor",
 ]
 
 [[package]]
