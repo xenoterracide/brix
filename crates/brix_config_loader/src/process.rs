@@ -3,7 +3,7 @@ use serde_json::json;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use brix_commands::{CopyCommand, SearchReplaceCommand, TemplateCommand};
+use brix_commands::{CopyCommand, MkdirCommand, SearchReplaceCommand, TemplateCommand};
 use brix_common::context::{cli_config_to_map, ContextMap};
 use brix_common::AppContext;
 use brix_errors::BrixError;
@@ -13,7 +13,8 @@ use crate::{Command, CommandList, RawConfig};
 use crate::{ProcessedCommandParams, RawCommandParams};
 
 lazy_static! {
-    static ref SUPPORTED_COMMANDS: Vec<&'static str> = vec!["copy", "search_replace"];
+    static ref SUPPORTED_COMMANDS: Vec<&'static str> =
+        vec!["copy", "mkdir", "search_replace", "template"];
 }
 
 impl<'a> ConfigLoader<'a> {
@@ -29,6 +30,7 @@ impl<'a> ConfigLoader<'a> {
             let value = command.values().next().unwrap();
             let command: Box<dyn Command> = match key.to_lowercase().as_str() {
                 "copy" => Box::new(CopyCommand::new()),
+                "mkdir" => Box::new(MkdirCommand::new()),
                 "search_replace" => Box::new(SearchReplaceCommand::new()),
                 "template" => Box::new(TemplateCommand::new()),
                 _ => {

@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -59,17 +60,35 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
         util::display_path(&config_file.to_string_lossy())
     );
 
+    // Count the number of each type of command and how many times it was run
+    let mut map: HashMap<String, (i32, i32)> = HashMap::new();
+    for (command, _) in commands.iter() {
+        let name = command.name();
+        map.insert(name.clone(), (map.get(&name).unwrap_or(&(0, 0)).0 + 1, 0));
+    }
+
     for (command, args) in commands.into_iter() {
-        println!("{} {}", "RUNNING".green(), command.name());
+        let name = command.name();
+        let (total, ran) = *map.get(&name).unwrap();
+
+        println!(
+            "{} {} ({}/{})",
+            "RUNNING".green(),
+            name.bold(),
+            ran + 1,
+            total,
+        );
         if let Err(err) = command.run(args, &app_context) {
             eprintln!(
                 "Error running {} command in '{}'",
                 command.name(),
-                config_file.display()
+                util::display_path(&format!("{}", config_file.display()))
             );
             eprintln!("{}", err);
             process::exit(2);
         }
+
+        map.insert(name, (total, ran + 1));
     }
     let elapsed = start.elapsed();
 

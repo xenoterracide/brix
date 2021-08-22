@@ -13,6 +13,7 @@ use brix_common::AppContext;
 use brix_errors::BrixError;
 
 pub mod copy;
+pub mod mkdir;
 pub mod search_replace;
 pub mod template;
 

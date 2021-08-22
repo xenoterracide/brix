@@ -4,5 +4,5 @@ commands:
       destination: output/template/{{module}}.rs
       overwrite: true
       context:
-        function: test_that_it_works
+        function: testThatItWorks
         result: 20
