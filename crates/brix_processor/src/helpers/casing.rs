@@ -33,7 +33,7 @@ impl HelperDef for ToCaseHelper {
             "upper-flat" => Ok(Case::UpperFlat),
             "alternating" => Ok(Case::Alternating),
             "" => Err(RenderError::new(
-                "try putting the name of your desired case in quoatation marks e.g. \"snake\"",
+                "try putting the name of your desired case in quotation marks e.g. \"snake\"",
             )),
             _ => Err(RenderError::new(format!(
                 "case '{}' not supported",
