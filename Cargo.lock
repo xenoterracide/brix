@@ -170,6 +170,7 @@ dependencies = [
  "brix_errors",
  "convert_case",
  "handlebars",
+ "lazy_static",
  "serde",
  "serde_json",
  "titlecase",

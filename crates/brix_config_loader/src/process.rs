@@ -60,13 +60,27 @@ impl<'a> ConfigLoader<'a> {
             // Merge contexts together
             let context = context_map.do_merge();
 
+            // After the merge, template the actual context itself in case it includes context
+            // For instance, the context might be something like `path: temp/{{module}}`
             let processor_context = brix_processor::create_context(context.clone());
-            let res = app_context
-                .processor
-                .process(json.to_string(), processor_context)?;
+            let mut processed_processor_context = HashMap::new();
+            // TODO: perhaps templating each individual context line isn't really that performant...
+            for (key, raw_line) in processor_context.iter() {
+                // Replace the raw quotation marks
+                let context_line = raw_line.to_string().replace("\"", "");
+                let processed = app_context
+                    .processor
+                    .process(context_line, processor_context.clone())?;
+                processed_processor_context.insert(String::from(key), processed);
+            }
+
+            let res = app_context.processor.process(
+                json.to_string(),
+                brix_processor::create_context(processed_processor_context.clone()),
+            )?;
             let raw_args: RawCommandParams = serde_json::from_str(&res).unwrap();
             let mut args = self.create_processed_args(&raw_args)?;
-            args.context = Some(context);
+            args.context = Some(processed_processor_context);
 
             list.push((command, args));
         }

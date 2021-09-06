@@ -22,6 +22,7 @@ impl HelperDef for ToCaseHelper {
         let case = match modified_case_type.as_str() {
             "toggle" => Ok(Case::Toggle),
             "pascal" => Ok(Case::Pascal),
+            "camel" => Ok(Case::Camel),
             "upper-camel" => Ok(Case::UpperCamel),
             "snake" => Ok(Case::Snake),
             "upper-snake" => Ok(Case::UpperSnake),

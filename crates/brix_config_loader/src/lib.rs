@@ -74,6 +74,8 @@ impl<'a> ConfigLoader<'a> {
     pub fn run(&self, app_context: &AppContext) -> Result<CommandList, BrixError> {
         let mut parser: Option<&Box<dyn ConfigParser>> = None;
 
+        // Loop over each of the valid parsers this instance is configured with and see
+        // if the extension for the config file matches with the parser we are testing
         for parser_opt in self.parsers.iter() {
             if parser_opt.matches(self.config_file.as_ref().unwrap()) {
                 parser = Some(parser_opt);
@@ -81,8 +83,10 @@ impl<'a> ConfigLoader<'a> {
             }
         }
 
+        // Read the contents of the file to a string and parse it into the raw struct
         let contents = fs::read_to_string(self.config_file.as_ref().unwrap())?;
         let config = parser.unwrap().parse(&contents)?;
+        // Send it over to be processed (./process.rs)
         self.process(&config, app_context)
     }
 }
