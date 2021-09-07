@@ -2,14 +2,18 @@ use std::path::PathBuf;
 
 use crate::command::Command;
 use crate::{ProcessedCommandParams, TemplateCommand};
+use brix_common::AppContext;
 use brix_errors::BrixErrorKind;
+use brix_processor::ProcessorCore;
 
 macro_rules! run {
     ($args:expr) => {{
+        let processor = ProcessorCore::new();
         let command = TemplateCommand::new();
+        let context = AppContext { processor };
         // Ensure it is a validation error
         assert_eq!(
-            command.run($args).unwrap_err().kind.unwrap(),
+            command.run($args, &context).unwrap_err().kind.unwrap(),
             BrixErrorKind::Validation
         );
     }};

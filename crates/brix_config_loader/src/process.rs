@@ -3,8 +3,9 @@ use serde_json::json;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use brix_commands::{CopyCommand, SearchReplaceCommand, TemplateCommand};
+use brix_commands::{CopyCommand, MkdirCommand, SearchReplaceCommand, TemplateCommand};
 use brix_common::context::{cli_config_to_map, ContextMap};
+use brix_common::AppContext;
 use brix_errors::BrixError;
 
 use crate::ConfigLoader;
@@ -12,11 +13,16 @@ use crate::{Command, CommandList, RawConfig};
 use crate::{ProcessedCommandParams, RawCommandParams};
 
 lazy_static! {
-    static ref SUPPORTED_COMMANDS: Vec<&'static str> = vec!["copy", "search_replace"];
+    static ref SUPPORTED_COMMANDS: Vec<&'static str> =
+        vec!["copy", "mkdir", "search_replace", "template"];
 }
 
 impl<'a> ConfigLoader<'a> {
-    pub fn process(&self, config: &RawConfig) -> Result<CommandList, BrixError> {
+    pub fn process(
+        &self,
+        config: &RawConfig,
+        app_context: &AppContext,
+    ) -> Result<CommandList, BrixError> {
         let mut list = CommandList::new();
 
         for command in config.commands.iter() {
@@ -24,6 +30,7 @@ impl<'a> ConfigLoader<'a> {
             let value = command.values().next().unwrap();
             let command: Box<dyn Command> = match key.to_lowercase().as_str() {
                 "copy" => Box::new(CopyCommand::new()),
+                "mkdir" => Box::new(MkdirCommand::new()),
                 "search_replace" => Box::new(SearchReplaceCommand::new()),
                 "template" => Box::new(TemplateCommand::new()),
                 _ => {
@@ -53,11 +60,27 @@ impl<'a> ConfigLoader<'a> {
             // Merge contexts together
             let context = context_map.do_merge();
 
+            // After the merge, template the actual context itself in case it includes context
+            // For instance, the context might be something like `path: temp/{{module}}`
             let processor_context = brix_processor::create_context(context.clone());
-            let res = brix_processor::process(json.to_string(), processor_context)?;
+            let mut processed_processor_context = HashMap::new();
+            // TODO: perhaps templating each individual context line isn't really that performant...
+            for (key, raw_line) in processor_context.iter() {
+                // Replace the raw quotation marks
+                let context_line = raw_line.to_string().replace("\"", "");
+                let processed = app_context
+                    .processor
+                    .process(context_line, processor_context.clone())?;
+                processed_processor_context.insert(String::from(key), processed);
+            }
+
+            let res = app_context.processor.process(
+                json.to_string(),
+                brix_processor::create_context(processed_processor_context.clone()),
+            )?;
             let raw_args: RawCommandParams = serde_json::from_str(&res).unwrap();
             let mut args = self.create_processed_args(&raw_args)?;
-            args.context = Some(context);
+            args.context = Some(processed_processor_context);
 
             list.push((command, args));
         }

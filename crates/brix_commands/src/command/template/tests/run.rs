@@ -6,8 +6,14 @@ use maplit::*;
 use crate::command::Command;
 use crate::{ProcessedCommandParams, TemplateCommand};
 
+use brix_common::AppContext;
+use brix_processor::ProcessorCore;
+
 macro_rules! do_test {
     ($source:expr, $context:expr, $assertion:expr) => {{
+        let processor = ProcessorCore::new();
+        let context = AppContext { processor };
+
         let path = PathBuf::from("src/command/template").join($source);
         let temp_dir = "src/command/template/temp/";
         let file_stem = path.file_stem().unwrap().to_str().unwrap();
@@ -15,7 +21,7 @@ macro_rules! do_test {
 
         let args = create_args!(path.clone(), destination.clone(), $context);
         let command = TemplateCommand::new();
-        command.run(args).unwrap();
+        command.run(args, &context).unwrap();
 
         let result = read_to_string(PathBuf::from(destination.clone())).unwrap();
         // Ensure that the file is removed from the temp directory

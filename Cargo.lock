@@ -45,6 +45,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 
 [[package]]
+name = "bit-set"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e11e16035ea35e4e5997b393eacbf6f63983188f7a2ad25bfb13465f5ad59de"
+dependencies = [
+ "bit-vec",
+]
+
+[[package]]
+name = "bit-vec"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "349f9b6a179ed607305526ca489b34ad0a41aed5f7980fa90eb03160b69598fb"
+
+[[package]]
 name = "bitflags"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -77,8 +92,10 @@ version = "0.3.0"
 dependencies = [
  "brix_cli",
  "brix_commands",
+ "brix_common",
  "brix_config_loader",
  "brix_errors",
+ "brix_processor",
  "cargo-husky",
  "clap",
  "colored",
@@ -97,13 +114,14 @@ dependencies = [
 name = "brix_commands"
 version = "0.1.0"
 dependencies = [
+ "brix_common",
  "brix_errors",
  "brix_processor",
  "dialoguer",
+ "fancy-regex",
  "log",
  "maplit",
  "pretty_assertions",
- "regex",
  "serde",
  "spectral",
  "validator",
@@ -114,6 +132,7 @@ name = "brix_common"
 version = "0.1.0"
 dependencies = [
  "brix_cli",
+ "brix_processor",
 ]
 
 [[package]]
@@ -138,8 +157,8 @@ name = "brix_errors"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "fancy-regex",
  "handlebars",
- "regex",
  "serde_yaml",
  "validator",
 ]
@@ -149,9 +168,12 @@ name = "brix_processor"
 version = "0.1.0"
 dependencies = [
  "brix_errors",
+ "convert_case",
  "handlebars",
+ "lazy_static",
  "serde",
  "serde_json",
+ "titlecase",
 ]
 
 [[package]]
@@ -220,6 +242,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "convert_case"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6245d59a3e82a7fc217c5828a6692dbc6dfb63a0c8c90495621f7b9d79704a0e"
+
+[[package]]
 name = "ctor"
 version = "0.1.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -279,6 +307,16 @@ name = "fake-simd"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e88a8acf291dafb59c2d96e8f59828f3838bb1a70398823ade51a84de6a6deed"
+
+[[package]]
+name = "fancy-regex"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87e7d1e641426bab86eb4c5eb3bc5998ac3e15f9ba761fe0da3061ecd3ff0e9f"
+dependencies = [
+ "bit-set",
+ "regex",
+]
 
 [[package]]
 name = "form_urlencoded"
@@ -867,6 +905,16 @@ name = "tinyvec_macros"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
+
+[[package]]
+name = "titlecase"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f565e410cfc24c2f2a89960b023ca192689d7f77d3f8d4f4af50c2d8affe1117"
+dependencies = [
+ "lazy_static",
+ "regex",
+]
 
 [[package]]
 name = "typenum"

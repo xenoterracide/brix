@@ -6,6 +6,7 @@ use log::debug;
 use validator::{Validate, ValidationErrors};
 
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
+use brix_common::AppContext;
 use brix_errors::BrixError;
 
 #[cfg(test)]
@@ -84,7 +85,7 @@ impl OverwritableCommand for CopyCommand {
         })
     }
 
-    fn write_impl(&self, params: CopyParams) -> Result<(), BrixError> {
+    fn write_impl(&self, params: CopyParams, _app_context: &AppContext) -> Result<(), BrixError> {
         debug!(
             "copying '{}' to '{}'",
             params.source.display(),
