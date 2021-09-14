@@ -1,3 +1,8 @@
+// Copyright (c) 2021 Ethan Lerner, Caleb Cushing, and the Brix contributors
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 use std::collections::HashMap;
 use std::format;
 use std::fs::create_dir_all;
