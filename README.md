@@ -1,5 +1,8 @@
 ### Brix
 Brix is a CLI tool written in Rust for scaffolding and code generation.
+
+#### Attributions
+Special thanks to [Caleb Cushing](https://github.com/xenoterracide) for the original Java version, early interface design and internal architecture.
 #### Running
 Usage:
 ```
@@ -9,7 +12,9 @@ brix [OPTIONS] --workdir | -w [WORKING DIRECTORY]
 ```
 
 #### Installing locally
-- Clone the repository and ensure you have the Rust toolchain and Cargo installed
+##### Requirements
+- Cargo and a minimum Rust version of **1.43.1**
+##### Running
 - Run `cargo build`
 - Run `cargo run`
 
