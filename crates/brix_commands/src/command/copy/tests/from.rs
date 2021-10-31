@@ -23,6 +23,8 @@ mod params {
             overwrite: None,
             search: None,
             replace: None,
+        commands: None,
+        stdout: None,
             context: None,
         };
         assert_eq!(
@@ -47,6 +49,8 @@ mod params {
             overwrite: None,
             search: None,
             replace: None,
+        commands: None,
+        stdout: None,
             context: None,
         };
 

@@ -37,6 +37,8 @@ macro_rules! create_args {
             overwrite: None,
             search: Some(String::from($search)),
             replace: Some(String::from($replace)),
+            commands: None,
+            stdout: None,
             context: None,
         }
     };

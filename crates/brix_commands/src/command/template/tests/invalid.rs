@@ -32,6 +32,8 @@ fn nothing() {
         overwrite: None,
         search: None,
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -44,6 +46,8 @@ fn source() {
         overwrite: None,
         search: None,
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -56,6 +60,8 @@ fn destination() {
         overwrite: None,
         search: None,
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -69,6 +75,8 @@ fn valid() {
         overwrite: None,
         search: None,
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }

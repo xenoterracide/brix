@@ -43,6 +43,8 @@ macro_rules! create_args {
             overwrite: Some(true),
             search: None,
             replace: None,
+            commands: None,
+            stdout: None,
             context: Some($context),
         }
     };

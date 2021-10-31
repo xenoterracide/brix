@@ -1,0 +1,8 @@
+commands:
+  - exec:
+      commands: [
+          "cargo test --all",
+          'echo "Hello World!"',
+          "cargo --version"
+        ]
+      stdout: true

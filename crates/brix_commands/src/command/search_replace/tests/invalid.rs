@@ -32,6 +32,8 @@ fn nothing() {
         overwrite: None,
         search: None,
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -44,6 +46,8 @@ fn destination() {
         overwrite: None,
         search: None,
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -56,6 +60,8 @@ fn search() {
         overwrite: None,
         search: Some(String::new()),
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -68,6 +74,8 @@ fn replace() {
         overwrite: None,
         search: None,
         replace: Some(String::new()),
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -80,6 +88,8 @@ fn destination_search() {
         overwrite: None,
         search: Some(String::new()),
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -92,6 +102,8 @@ fn destination_replace() {
         overwrite: None,
         search: None,
         replace: Some(String::new()),
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -104,6 +116,8 @@ fn search_replace() {
         overwrite: None,
         search: Some(String::new()),
         replace: Some(String::new()),
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -117,6 +131,8 @@ fn valid() {
         overwrite: None,
         search: Some(String::new()),
         replace: Some(String::new()),
+        commands: None,
+        stdout: None,
         context: None,
     })
 }

@@ -18,6 +18,7 @@ use brix_common::AppContext;
 use brix_errors::BrixError;
 
 pub mod copy;
+pub mod exec;
 pub mod mkdir;
 pub mod search_replace;
 pub mod template;
@@ -122,5 +123,7 @@ pub struct ProcessedCommandParams {
     pub overwrite: Option<bool>,
     pub search: Option<String>,
     pub replace: Option<String>,
+    pub commands: Option<Vec<String>>,
+    pub stdout: Option<bool>,
     pub context: Option<HashMap<String, String>>,
 }

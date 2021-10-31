@@ -25,6 +25,7 @@ Run `cargo test --all` to test the entire workspace.
 There are a few examples located in `./config/brix/rust`.
 
 - **copy** `cargo run -- rust copy brix foo`
+- **exec** `cargo run -- rust exec foo foo`
 - **mkdir** `cargo run -- rust mkdir brix foo`
 - **search_replace** `cargo run -- rust search_replace brix foo`
 - **template** `cargo run -- rust template brix foo`

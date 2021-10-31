@@ -115,5 +115,7 @@ struct RawCommandParams {
     overwrite: Option<bool>,
     search: Option<String>,
     replace: Option<String>,
+    commands: Option<Vec<String>>,
+    stdout: Option<bool>,
     context: Option<HashMap<String, String>>,
 }
