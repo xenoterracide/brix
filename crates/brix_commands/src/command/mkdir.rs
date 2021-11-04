@@ -11,6 +11,12 @@ use crate::command::{Command, ProcessedCommandParams};
 use brix_common::AppContext;
 use brix_errors::BrixError;
 
+#[cfg(test)]
+mod tests {
+    mod from;
+    mod run;
+}
+
 #[derive(Debug)]
 pub struct MkdirParams {
     destination: PathBuf,

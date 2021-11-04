@@ -86,7 +86,7 @@ fn diff_extension() {
 }
 
 #[test]
-fn non_utf8() {
+fn non_english() {
     do_test!(
         "non_english.txt",
         "это не английские буквы\n",

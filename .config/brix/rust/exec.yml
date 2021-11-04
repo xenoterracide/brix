@@ -1,8 +1,10 @@
 commands:
   - exec:
-      commands: [
+      commands:
+        [
           "cargo test --all",
           'echo "Hello World!"',
-          "cargo --version"
+          'echo "MODULE: {{module}}, PROJECT: {{project}}"',
+          "cargo --version",
         ]
       stdout: true
