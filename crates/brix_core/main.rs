@@ -11,6 +11,7 @@ use std::time::Instant;
 
 use colored::*;
 
+use brix_cli::error as cli_error;
 use brix_common::AppContext;
 use brix_config_loader::YamlConfigParser;
 use brix_config_loader::{ConfigLoader, ParserList};
@@ -25,17 +26,21 @@ type Result<T> = std::result::Result<T, BrixError>;
 
 fn main() {
     if let Err(err) = brix_cli::clap_matches().and_then(try_main) {
-        eprintln!("{}", err);
+        cli_error!("{}", err);
         process::exit(2);
     }
 }
 
 fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
-    SimpleLogger::new().init().unwrap();
-
     let home_dir = home::home_dir();
+    let config = brix_cli::Config::new(home_dir.clone(), matches);
+
+    SimpleLogger::new()
+        .with_level(config.log_level)
+        .init()
+        .unwrap();
+
     debug!("HOME DIR: {:?}", home_dir);
-    let config = brix_cli::Config::new(home_dir, matches);
 
     let config_root = Path::new(&config.config_dir);
     let language_dir = Path::new(&config.language);
@@ -90,12 +95,13 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
             total,
         );
         if let Err(err) = command.run(args, &app_context) {
-            error!(
+            cli_error!(
                 "Error running {} command in '{}'",
                 command.name(),
                 util::display_path(&format!("{}", config_file.display()))
             );
             error!("{}", err);
+
             process::exit(2);
         }
 
@@ -103,11 +109,7 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
     }
     let elapsed = start.elapsed();
 
-    println!(
-        "----------\n{} in {}ms",
-        "DONE!".bright_green(),
-        elapsed.as_millis()
-    );
+    println!("----------\n{} in {:#?}", "DONE!".bright_green(), elapsed);
     process::exit(0);
 }
 
@@ -167,7 +169,6 @@ fn search_for_module_declarations(
 
     let paths = fs::read_dir(search_path)?;
     for path in paths {
-        debug!("Path: {:?}", path);
         let path = path.unwrap().path();
         if path.is_file() {
             let stem = path.file_stem().unwrap();

@@ -8,6 +8,7 @@ use brix_errors::BrixError;
 mod app;
 mod args;
 mod config;
+mod print;
 
 pub mod select;
 

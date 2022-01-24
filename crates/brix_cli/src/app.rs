@@ -19,11 +19,12 @@ pub const MODULE: &str = "MODULE";
 
 // Flags
 pub const CONFIG_DIR: &str = "CONFIG_DIR";
+pub const LOG_LEVEL: &str = "LOG_LEVEL";
 
 /// Creates the clap application and sets args
 pub fn app() -> App<'static, 'static> {
     let mut app = App::new("brix")
-        .author(crate_authors!())
+        .author(crate_authors!("\n"))
         .version(crate_version!())
         .max_term_width(100)
         .setting(AppSettings::UnifiedHelpMessage)
@@ -36,6 +37,7 @@ pub fn app() -> App<'static, 'static> {
     app = app.arg(arg_project());
     app = app.arg(arg_module());
     app = app.arg(flag_config_dir());
+    app = app.arg(flag_log_level());
 
     app
 }
@@ -83,4 +85,18 @@ If the config isn't found here, then ~/.config/brix will be searched
         .help(HELP)
         .long("config-dir")
         .short("d")
+        .takes_value(true)
+        .default_value(".config/brix")
+        .hide_default_value(true)
+}
+
+fn flag_log_level() -> Arg<'static, 'static> {
+    const HELP: &str = "The log level to use while running a command.";
+    Arg::with_name(LOG_LEVEL)
+        .value_name("log level")
+        .help(HELP)
+        .long("log-level")
+        .takes_value(true)
+        .default_value("off")
+        .possible_values(&["off", "error", "warn", "info", "debug", "trace"])
 }

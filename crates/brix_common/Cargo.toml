@@ -1,7 +1,10 @@
 [package]
 name = "brix_common"
 version = "0.1.0"
-authors = ["Miapolis <41233357+Miapolis@users.noreply.github.com>"]
+authors = [
+  "Ethan Lerner <ethan@lerners.io>",
+  "Caleb Cushing <xenoterracide@gmail.com>"
+]
 edition = "2018"
 
 [dependencies]

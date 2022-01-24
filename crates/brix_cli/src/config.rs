@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 use clap::ArgMatches;
+use log::LevelFilter;
 use std::borrow::Cow;
 use std::fmt::{self, Display, Formatter};
 use std::path::PathBuf;
@@ -18,6 +19,7 @@ pub struct Config {
 
     pub config_dir: String,
     pub home_dir: Option<PathBuf>,
+    pub log_level: log::LevelFilter,
     // TODO: Add flags
     pub raw_matches: ArgMatches<'static>,
 }
@@ -37,6 +39,10 @@ impl Config {
             .value_of_lossy(app::CONFIG_DIR)
             .unwrap_or(Cow::from(".config/brix"))
             .to_string();
+        let log_level = matches
+            .value_of_lossy(app::LOG_LEVEL)
+            .unwrap_or(Cow::from("off"))
+            .to_string();
 
         Self {
             raw_matches: matches,
@@ -45,8 +51,21 @@ impl Config {
             project,
             config_dir,
             home_dir,
+            log_level: log_level_to_struct(&log_level),
             module,
         }
+    }
+}
+
+fn log_level_to_struct(level: &str) -> LevelFilter {
+    match level {
+        "off" => LevelFilter::Off,
+        "error" => LevelFilter::Error,
+        "warn" => LevelFilter::Warn,
+        "info" => LevelFilter::Info,
+        "debug" => LevelFilter::Debug,
+        "trace" => LevelFilter::Trace,
+        _ => unimplemented!(),
     }
 }
 
