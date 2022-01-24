@@ -16,6 +16,8 @@ use brix_config_loader::YamlConfigParser;
 use brix_config_loader::{ConfigLoader, ParserList};
 use brix_errors::BrixError;
 use brix_processor::ProcessorCore;
+use log::{debug, error, info};
+use simple_logger::SimpleLogger;
 
 mod util;
 
@@ -29,7 +31,11 @@ fn main() {
 }
 
 fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
-    let config = brix_cli::Config::new(matches);
+    SimpleLogger::new().init().unwrap();
+
+    let home_dir = home::home_dir();
+    debug!("HOME DIR: {:?}", home_dir);
+    let config = brix_cli::Config::new(home_dir, matches);
 
     let config_root = Path::new(&config.config_dir);
     let language_dir = Path::new(&config.language);
@@ -84,12 +90,12 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
             total,
         );
         if let Err(err) = command.run(args, &app_context) {
-            eprintln!(
+            error!(
                 "Error running {} command in '{}'",
                 command.name(),
                 util::display_path(&format!("{}", config_file.display()))
             );
-            eprintln!("{}", err);
+            error!("{}", err);
             process::exit(2);
         }
 
@@ -106,7 +112,7 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
 }
 
 fn modules_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<Vec<PathBuf>> {
-    let declarations = search_for_module_declarations(dir.to_str().unwrap(), &config.config_name)?;
+    let declarations = search_for_module_declarations_all(dir.to_str().unwrap(), &config)?;
 
     if declarations.len() == 0 {
         return Err(BrixError::with(&format!(
@@ -119,11 +125,49 @@ fn modules_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<Vec<P
     Ok(declarations)
 }
 
-fn search_for_module_declarations(path: &str, name: &str) -> Result<Vec<PathBuf>> {
-    let paths = fs::read_dir(path)?;
+fn search_for_module_declarations_all(
+    path: &str,
+    config: &brix_cli::Config,
+) -> Result<Vec<PathBuf>> {
+    let mut current_path = std::env::current_dir().unwrap();
+
+    loop {
+        debug!("Looking for config directory in {:?}", current_path);
+        let declarations =
+            search_for_module_declarations(&current_path, &path, &config.config_name)?;
+        if declarations.len() > 0 {
+            return Ok(declarations);
+        }
+
+        if &current_path == config.home_dir.as_ref().unwrap() {
+            return Err(BrixError::with(&format!(
+                "Could not find module declaration for '{}' in {}",
+                config.config_name,
+                util::display_path(&path)
+            )));
+        }
+
+        current_path = current_path.parent().unwrap().to_path_buf();
+    }
+}
+
+fn search_for_module_declarations(
+    current_path: &PathBuf,
+    path: &str,
+    name: &str,
+) -> Result<Vec<PathBuf>> {
     let mut results = Vec::new();
 
+    let search_path = current_path.join(path);
+    if !search_path.exists() {
+        // Should not error if the directory doesn't exist,
+        // just return an empty vec of results
+        return Ok(vec![]);
+    }
+
+    let paths = fs::read_dir(search_path)?;
     for path in paths {
+        debug!("Path: {:?}", path);
         let path = path.unwrap().path();
         if path.is_file() {
             let stem = path.file_stem().unwrap();
@@ -132,6 +176,7 @@ fn search_for_module_declarations(path: &str, name: &str) -> Result<Vec<PathBuf>
             }
         }
     }
+    info!("RESULTS: {:?}", results);
 
     Ok(results)
 }
