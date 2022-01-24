@@ -14,8 +14,9 @@ use brix_processor::ProcessorCore;
 macro_rules! do_test {
     ($path:expr, $search:expr, $replace:expr, $assertion:expr) => {{
         let processor = ProcessorCore::new();
+        let config = brix_cli::Config::default();
         let command = SearchReplaceCommand::new();
-        let context = AppContext { processor };
+        let context = AppContext { processor, config: &config };
 
         let path = PathBuf::from("src/command/search_replace").join($path);
         let contents = read_to_string(path.clone()).unwrap();

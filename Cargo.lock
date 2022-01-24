@@ -121,6 +121,7 @@ dependencies = [
 name = "brix_commands"
 version = "0.1.0"
 dependencies = [
+ "brix_cli",
  "brix_common",
  "brix_errors",
  "brix_processor",

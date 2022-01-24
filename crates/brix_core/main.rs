@@ -59,7 +59,10 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
 
     // Create the app context
     let processor = ProcessorCore::new();
-    let app_context = AppContext { processor };
+    let app_context = AppContext {
+        processor,
+        config: &config,
+    };
 
     let start = Instant::now();
     let commands = loader.run(&app_context).or_else(|err| {
@@ -131,7 +134,7 @@ fn search_for_module_declarations_all(
     path: &str,
     config: &brix_cli::Config,
 ) -> Result<Vec<PathBuf>> {
-    let mut current_path = std::env::current_dir().unwrap();
+    let mut current_path = config.workdir.clone();
 
     loop {
         debug!("Looking for config directory in {:?}", current_path);

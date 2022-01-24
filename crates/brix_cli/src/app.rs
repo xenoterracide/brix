@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+use std::path::Path;
+
 use clap::{self, crate_authors, crate_version, App, AppSettings, Arg};
 
 const USAGE: &str = "
@@ -19,6 +21,7 @@ pub const MODULE: &str = "MODULE";
 
 // Flags
 pub const CONFIG_DIR: &str = "CONFIG_DIR";
+pub const WORKDIR: &str = "WORKDIR";
 pub const LOG_LEVEL: &str = "LOG_LEVEL";
 
 /// Creates the clap application and sets args
@@ -38,6 +41,7 @@ pub fn app() -> App<'static, 'static> {
     app = app.arg(arg_module());
     app = app.arg(flag_config_dir());
     app = app.arg(flag_log_level());
+    app = app.arg(flag_workdir());
 
     app
 }
@@ -88,10 +92,23 @@ If the config isn't found here, then ~/.config/brix will be searched
         .takes_value(true)
         .default_value(".config/brix")
         .hide_default_value(true)
+        .validator(is_valid_path)
+}
+
+fn flag_workdir() -> Arg<'static, 'static> {
+    const HELP: &str =
+        "The current working directory to use. Defaults to the directory where brix is run from";
+    Arg::with_name(WORKDIR)
+        .value_name("workdir")
+        .help(HELP)
+        .long("workdir")
+        .short("w")
+        .takes_value(true)
+        .validator(is_valid_path)
 }
 
 fn flag_log_level() -> Arg<'static, 'static> {
-    const HELP: &str = "The log level to use while running a command.";
+    const HELP: &str = "The log level to use while running a command";
     Arg::with_name(LOG_LEVEL)
         .value_name("log level")
         .help(HELP)
@@ -99,4 +116,13 @@ fn flag_log_level() -> Arg<'static, 'static> {
         .takes_value(true)
         .default_value("off")
         .possible_values(&["off", "error", "warn", "info", "debug", "trace"])
+}
+
+fn is_valid_path(v: String) -> Result<(), String> {
+    let path = Path::new(&v);
+    if path.exists() {
+        Ok(())
+    } else {
+        Err(format!("The directory {} does not exist", v))
+    }
 }

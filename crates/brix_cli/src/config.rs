@@ -17,10 +17,11 @@ pub struct Config {
     pub project: String,
     pub module: String,
 
-    pub config_dir: String,
+    pub config_dir: PathBuf,
+    pub workdir: PathBuf,
     pub home_dir: Option<PathBuf>,
     pub log_level: log::LevelFilter,
-    // TODO: Add flags
+
     pub raw_matches: ArgMatches<'static>,
 }
 
@@ -35,10 +36,20 @@ impl Config {
         let project = matches.value_of_lossy(app::PROJECT).unwrap().to_string();
         let module = matches.value_of_lossy(app::MODULE).unwrap().to_string();
 
-        let config_dir = matches
-            .value_of_lossy(app::CONFIG_DIR)
-            .unwrap_or(Cow::from(".config/brix"))
-            .to_string();
+        let config_dir = PathBuf::from(
+            matches
+                .value_of_lossy(app::CONFIG_DIR)
+                .unwrap_or(Cow::from(".config/brix"))
+                .to_string(),
+        );
+        let workdir = PathBuf::from(
+            matches
+                .value_of_lossy(app::WORKDIR)
+                .unwrap_or(Cow::from(
+                    std::env::current_dir().unwrap().to_str().unwrap(),
+                ))
+                .to_string(),
+        );
         let log_level = matches
             .value_of_lossy(app::LOG_LEVEL)
             .unwrap_or(Cow::from("off"))
@@ -50,6 +61,7 @@ impl Config {
             config_name,
             project,
             config_dir,
+            workdir,
             home_dir,
             log_level: log_level_to_struct(&log_level),
             module,
@@ -69,11 +81,33 @@ fn log_level_to_struct(level: &str) -> LevelFilter {
     }
 }
 
+macro_rules! s {
+    () => {
+        String::new()
+    };
+}
+
+impl std::default::Default for Config {
+    fn default() -> Self {
+        Self {
+            language: s!(),
+            config_name: s!(),
+            project: s!(),
+            module: s!(),
+            config_dir: PathBuf::from(".config/brix"),
+            workdir: std::env::current_dir().unwrap(),
+            home_dir: None,
+            log_level: LevelFilter::Off,
+            raw_matches: ArgMatches::default(),
+        }
+    }
+}
+
 impl Display for Config {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         write!(
             formatter,
-            "[LANGUAGE: {}, CONFIG_NAME: {}, PROJECT: {}, MODULE: {}, CONFIG_DIR: {}]",
+            "[LANGUAGE: {}, CONFIG_NAME: {}, PROJECT: {}, MODULE: {}, CONFIG_DIR: {:?}]",
             self.language, self.config_name, self.project, self.module, self.config_dir
         )
     }

@@ -11,3 +11,4 @@ pub use command::template::TemplateCommand;
 pub use command::{Command, ProcessedCommandParams};
 
 mod command;
+mod macros;

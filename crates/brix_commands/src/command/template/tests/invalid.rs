@@ -14,8 +14,9 @@ use brix_processor::ProcessorCore;
 macro_rules! run {
     ($args:expr) => {{
         let processor = ProcessorCore::new();
+        let config = brix_cli::Config::default();
         let command = TemplateCommand::new();
-        let context = AppContext { processor };
+        let context = AppContext { processor, config: &config };
         // Ensure it is a validation error
         assert_eq!(
             command.run($args, &context).unwrap_err().kind.unwrap(),

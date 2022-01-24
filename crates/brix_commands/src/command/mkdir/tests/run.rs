@@ -13,8 +13,12 @@ use brix_processor::ProcessorCore;
 macro_rules! do_test {
     ($destination:expr) => {{
         let processor = ProcessorCore::new();
+        let config = brix_cli::Config::default();
         let command = MkdirCommand::new();
-        let context = AppContext { processor };
+        let context = AppContext {
+            processor,
+            config: &config,
+        };
 
         let path = PathBuf::from("src/command/mkdir/temp").join($destination);
 
