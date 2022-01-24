@@ -11,6 +11,7 @@ use log::debug;
 use validator::{Validate, ValidationErrors};
 
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
+use crate::dir;
 use brix_common::AppContext;
 use brix_errors::BrixError;
 
@@ -90,14 +91,16 @@ impl OverwritableCommand for CopyCommand {
         })
     }
 
-    fn write_impl(&self, params: CopyParams, _app_context: &AppContext) -> Result<(), BrixError> {
+    fn write_impl(&self, params: CopyParams, ctx: &AppContext) -> Result<(), BrixError> {
+        let dest = dir!(ctx.config.workdir, params.destination);
+
         debug!(
             "copying '{}' to '{}'",
             params.source.display(),
-            params.destination.display()
+            dest.display(),
         );
 
-        copy(params.source, params.destination)?;
+        copy(params.source, dest)?;
         Ok(())
     }
 

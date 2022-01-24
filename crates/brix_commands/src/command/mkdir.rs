@@ -7,7 +7,10 @@ use std::fs::create_dir_all;
 use std::path::PathBuf;
 use validator::Validate;
 
-use crate::command::{Command, ProcessedCommandParams};
+use crate::{
+    command::{Command, ProcessedCommandParams},
+    dir,
+};
 use brix_common::AppContext;
 use brix_errors::BrixError;
 
@@ -43,13 +46,13 @@ impl MkdirCommand {
 }
 
 impl Command for MkdirCommand {
-    fn run(&self, pcp: ProcessedCommandParams, _app_context: &AppContext) -> Result<(), BrixError> {
+    fn run(&self, pcp: ProcessedCommandParams, ctx: &AppContext) -> Result<(), BrixError> {
         let cp = Params {
             destination: pcp.destination,
         };
         cp.validate()?;
 
-        let dest = cp.destination.unwrap();
+        let dest = dir!(ctx.config.workdir, cp.destination.unwrap());
         create_dir_all(dest)?;
 
         Ok(())

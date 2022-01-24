@@ -12,7 +12,10 @@ use dialoguer::console::Term;
 use log::debug;
 use validator::{Validate, ValidationErrors};
 
-use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
+use crate::{
+    command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams},
+    dir,
+};
 use brix_common::AppContext;
 use brix_errors::BrixError;
 
@@ -99,19 +102,16 @@ impl OverwritableCommand for TemplateCommand {
         })
     }
 
-    fn write_impl(
-        &self,
-        params: TemplateParams,
-        app_context: &AppContext,
-    ) -> Result<(), BrixError> {
-        let mut file = File::open(&params.source)?;
+    fn write_impl(&self, params: TemplateParams, ctx: &AppContext) -> Result<(), BrixError> {
+        let source = dir!(ctx.config.workdir, params.source);
+        let mut file = File::open(&source)?;
         let mut contents = String::new();
         file.read_to_string(&mut contents)?;
 
-        debug!("templating '{}'", params.source.display());
+        debug!("templating '{}'", source.display());
         let context = params.context.unwrap_or(HashMap::new());
         let processed_context = brix_processor::create_context(context);
-        let result = app_context.processor.process(contents, processed_context)?;
+        let result = ctx.processor.process(contents, processed_context)?;
 
         std::fs::write(params.destination, result)?;
 
