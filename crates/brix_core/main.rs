@@ -48,7 +48,7 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
 
     let found_modules = modules_from_config(&module_dir, &config);
     if found_modules.is_err() {
-        eprintln!("{}", found_modules.unwrap_err());
+        brix_cli::error!("{}", found_modules.unwrap_err());
         process::exit(2);
     }
 
@@ -175,7 +175,7 @@ fn search_for_module_declarations(
         let path = path.unwrap().path();
         if path.is_file() {
             let stem = path.file_stem().unwrap();
-            if name == stem {
+            if name == stem || format!("{}.brix", name) == stem.to_str().unwrap() {
                 results.push(path);
             }
         }
