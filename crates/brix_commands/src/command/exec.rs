@@ -66,17 +66,6 @@ impl Command for ExecCommand {
 
             if use_stdout {
                 let stdout = String::from_utf8(output.unwrap().stdout).unwrap();
-                // let lines: Vec<&str> = stdout.split("\n").collect();
-
-                // let mut fin = String::new();
-                // for line in lines {
-                //     if !line.is_empty() {
-                //         fin.push_str(&format!("➞ ➞ {}", line))
-                //     } else {
-                //         fin.push_str("\n");
-                //     }
-                // }
-
                 println!("{}", stdout);
             }
         }
