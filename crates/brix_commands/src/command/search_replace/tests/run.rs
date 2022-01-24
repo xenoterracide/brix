@@ -16,7 +16,10 @@ macro_rules! do_test {
         let processor = ProcessorCore::new();
         let config = brix_cli::Config::default();
         let command = SearchReplaceCommand::new();
-        let context = AppContext { processor, config: &config };
+        let context = AppContext {
+            processor,
+            config: &config,
+        };
 
         let path = PathBuf::from("src/command/search_replace").join($path);
         let contents = read_to_string(path.clone()).unwrap();

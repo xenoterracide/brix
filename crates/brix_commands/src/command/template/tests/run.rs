@@ -18,7 +18,10 @@ macro_rules! do_test {
     ($source:expr, $context:expr, $assertion:expr) => {{
         let processor = ProcessorCore::new();
         let config = brix_cli::Config::default();
-        let context = AppContext { processor, config: &config };
+        let context = AppContext {
+            processor,
+            config: &config,
+        };
 
         let path = PathBuf::from("src/command/template").join($source);
         let temp_dir = "src/command/template/temp/";

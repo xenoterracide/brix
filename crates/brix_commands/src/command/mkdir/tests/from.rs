@@ -16,7 +16,10 @@ macro_rules! run {
         let processor = ProcessorCore::new();
         let config = brix_cli::Config::default();
         let command = MkdirCommand::new();
-        let context = AppContext { processor, config: &config };
+        let context = AppContext {
+            processor,
+            config: &config,
+        };
         // Ensure that it is a validation error that
         assert_eq!(
             command.run($args, &context).unwrap_err().kind.unwrap(),
