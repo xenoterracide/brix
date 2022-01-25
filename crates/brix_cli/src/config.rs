@@ -3,7 +3,9 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+use crate::error;
 use clap::ArgMatches;
+use colored::*;
 use log::LevelFilter;
 use std::borrow::Cow;
 use std::fmt::{self, Display, Formatter};
@@ -17,7 +19,7 @@ pub struct Config {
     pub project: String,
     pub module: String,
 
-    pub config_dir: PathBuf,
+    pub config_dir: Option<PathBuf>,
     pub workdir: PathBuf,
     pub home_dir: Option<PathBuf>,
     pub log_level: log::LevelFilter,
@@ -28,6 +30,15 @@ pub struct Config {
 impl Config {
     /// Parses matches and sets into config
     pub fn new(home_dir: Option<PathBuf>, matches: ArgMatches<'static>) -> Self {
+        let current_dir: Result<PathBuf, ()> = std::env::current_dir().or_else(|_| {
+            error!(
+                "
+    Something went wrong. Your current working directory is invalid.
+    This is either due to the directory being deleted or insufficient permissions.",
+            );
+            std::process::exit(2);
+        });
+
         let language = matches.value_of_lossy(app::LANGUAGE).unwrap().to_string();
         let config_name = matches
             .value_of_lossy(app::CONFIG_NAME)
@@ -36,18 +47,14 @@ impl Config {
         let project = matches.value_of_lossy(app::PROJECT).unwrap().to_string();
         let module = matches.value_of_lossy(app::MODULE).unwrap().to_string();
 
-        let config_dir = PathBuf::from(
-            matches
-                .value_of_lossy(app::CONFIG_DIR)
-                .unwrap_or(Cow::from(".config/brix"))
-                .to_string(),
-        );
+        let config_dir = matches
+            .value_of_lossy(app::CONFIG_DIR)
+            .and_then(|s| Some(PathBuf::from(s.to_string())));
+
         let workdir = PathBuf::from(
             matches
                 .value_of_lossy(app::WORKDIR)
-                .unwrap_or(Cow::from(
-                    std::env::current_dir().unwrap().to_str().unwrap(),
-                ))
+                .unwrap_or(Cow::from(current_dir.unwrap().to_str().unwrap()))
                 .to_string(),
         );
         let log_level = matches
@@ -94,7 +101,7 @@ impl std::default::Default for Config {
             config_name: s!(),
             project: s!(),
             module: s!(),
-            config_dir: PathBuf::from(".config/brix"),
+            config_dir: None,
             workdir: std::env::current_dir().unwrap(),
             home_dir: None,
             log_level: LevelFilter::Off,

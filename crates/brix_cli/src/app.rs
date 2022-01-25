@@ -90,8 +90,6 @@ If the config isn't found here, then ~/.config/brix will be searched
         .long("config-dir")
         .short("d")
         .takes_value(true)
-        .default_value(".config/brix")
-        .hide_default_value(true)
         .validator(is_valid_path)
 }
 

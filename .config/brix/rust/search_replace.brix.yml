@@ -1,5 +1,5 @@
 commands:
-- search_replace:
-    destination: .config/brix/rust/search_test.txt
-    search: es
-    replace: ES
+  - search_replace:
+      destination: .config/brix/rust/search_test.txt
+      search: es
+      replace: ES

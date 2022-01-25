@@ -1,11 +1,11 @@
 commands:
-- mkdir:
-    destination: output/{{module}}/one
-- mkdir:
-    destination: output/{{module}}/two
-- mkdir:
-    destination: output/{{module}}/three
-- mkdir:
-    destination: output/{{module}}/four
-- mkdir:
-    destination: output/{{module}}/five
+  - mkdir:
+      destination: output/{{module}}/one
+  - mkdir:
+      destination: output/{{module}}/two
+  - mkdir:
+      destination: output/{{module}}/three
+  - mkdir:
+      destination: output/{{module}}/four
+  - mkdir:
+      destination: output/{{module}}/five

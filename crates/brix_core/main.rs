@@ -42,7 +42,8 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
 
     debug!("HOME DIR: {:?}", home_dir);
 
-    let config_root = Path::new(&config.config_dir);
+    let default_config = PathBuf::from(".config/brix");
+    let config_root = Path::new(config.config_dir.as_ref().unwrap_or(&default_config));
     let language_dir = Path::new(&config.language);
     let module_dir = config_root.join(language_dir);
 
@@ -117,7 +118,16 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
 }
 
 fn modules_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<Vec<PathBuf>> {
-    let declarations = search_for_module_declarations_all(dir.to_str().unwrap(), &config)?;
+    let declarations;
+    if config.config_dir.is_none() {
+        declarations = search_for_module_declarations_all(dir.to_str().unwrap(), &config)?;
+    } else {
+        declarations = search_for_module_declarations(
+            config.config_dir.as_ref().unwrap(),
+            dir.to_str().unwrap(),
+            &config.config_name,
+        )?;
+    }
 
     if declarations.len() == 0 {
         return Err(BrixError::with(&format!(
