@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Module responsible for processing a [RawConfig] into a list of commands.
+
 use lazy_static::lazy_static;
 use serde_json::json;
 use std::collections::HashMap;
@@ -25,6 +27,7 @@ lazy_static! {
 }
 
 impl<'a> ConfigLoader<'a> {
+    /// Converts the [RawConfig] into a list of commands or returns an error.
     pub fn process(
         &self,
         config: &RawConfig,
@@ -96,6 +99,8 @@ impl<'a> ConfigLoader<'a> {
         Ok(list)
     }
 
+    /// Formats all the raw types (such as strings) into their preferred types
+    /// for the given field (such as a path).
     fn create_processed_args(
         &self,
         raw: &RawCommandParams,

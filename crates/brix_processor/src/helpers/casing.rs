@@ -3,9 +3,26 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains the [ToCaseHelper] helper.
+
 use crate::*;
 use convert_case::{Case, Casing};
 
+/// Helper that is used to convert a parameter from one case to another.
+/// Supports the following cases:
+/// - toggle
+/// - pascal
+/// - camel
+/// - upper-camel
+/// - snake
+/// - upper-snake
+/// - screaming-snake
+/// - kebab
+/// - cobol
+/// - train
+/// - flat
+/// - upper-flat
+/// - alternating
 #[derive(Clone, Copy)]
 pub struct ToCaseHelper;
 

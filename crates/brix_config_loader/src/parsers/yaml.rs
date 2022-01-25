@@ -3,12 +3,15 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! YAML config parser.
+
 use std::path::PathBuf;
 
 use crate::parsers::ConfigParser;
 use crate::BrixError;
 use crate::RawConfig;
 
+/// The config parser for .yaml and .yml files.
 pub struct YamlConfigParser;
 
 const SUPPORTED_EXTENSIONS: [&str; 2] = ["yaml", "yml"];

@@ -3,9 +3,14 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! # Brix Errors
+//! Common crate for the [BrixError] type used to help wrap and format many
+//! different types of errors that may occur within Brix.
+
 use std::fmt::{self, Display};
 use std::io;
 
+/// The Brix error, that supports an optional [BrixErrorKind] kind, and a message.
 #[derive(Debug)]
 pub struct BrixError {
     pub kind: Option<BrixErrorKind>,
@@ -13,6 +18,7 @@ pub struct BrixError {
 }
 
 impl BrixError {
+    /// Construct an error with only a message.
     pub fn with(error: &str) -> Self {
         Self {
             kind: None,
@@ -21,6 +27,7 @@ impl BrixError {
     }
 }
 
+/// Enum that lists all types of Brix errors.
 #[derive(Debug, PartialEq, Eq)]
 pub enum BrixErrorKind {
     Io,

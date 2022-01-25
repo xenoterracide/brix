@@ -4,7 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 //! # Brix CLI
-//! `brix_cli` is Brix's main crate for handling the `clap` application, some error formatting,
+//! Brix's main crate for handling the [clap](https://crates.io/crates/clap) application, some error formatting,
 //! and various other terminal functionality.
 
 use brix_errors::BrixError;

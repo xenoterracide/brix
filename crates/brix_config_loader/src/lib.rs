@@ -3,6 +3,11 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! # Brix Config Loader
+//! The config loader is responsible for loading the declaration file and dispatching it
+//! to the appropriate parser depending on the extension. It is also responsible for converting
+//! the declaration file into a parsed list of [commands](`brix_commands::Command`) and arguments.
+
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
@@ -18,11 +23,15 @@ use brix_commands::{Command, ProcessedCommandParams};
 use brix_common::AppContext;
 use brix_errors::BrixError;
 
+#[allow(rustdoc::private_intra_doc_links)]
+/// Defines a parser list as a vec of trait objects implementing [ConfigParser].
 pub type ParserList = Vec<Box<dyn ConfigParser>>;
+/// Defines a command list as a vec of tuples containing a [Command] trait object and [ProcessedCommandParams].
 type CommandList = Vec<(Box<dyn Command>, ProcessedCommandParams)>;
 
+/// Struct that holds current information about the loaded configs and parsers.
 pub struct ConfigLoader<'a> {
-    parsers: Vec<Box<dyn ConfigParser>>,
+    parsers: ParserList,
     config_file: Option<PathBuf>,
     config_dir: Option<PathBuf>,
     cli_config: &'a brix_cli::Config,
@@ -38,6 +47,8 @@ impl<'a> ConfigLoader<'a> {
         }
     }
 
+    /// Selects the proper configuration file knowing the supported extension for config files.
+    /// May possibly use a [select prompt](`brix_cli::select::do_select`) to ask the user to choose a config file.
     pub fn load(&mut self, config_files: Vec<PathBuf>) -> Result<PathBuf, BrixError> {
         self.config_dir = Some(config_files[0].parent().unwrap().to_path_buf());
         let mut all_extensions = Vec::new();
@@ -76,6 +87,9 @@ impl<'a> ConfigLoader<'a> {
         Ok(self.config_file.as_ref().unwrap().clone())
     }
 
+    #[allow(rustdoc::private_intra_doc_links)]
+    /// Actually parsers the config file for errors depending on the correct parser for the file.
+    /// Sends resulting parsed output to [process] to be processed into commands.
     pub fn run(&self, app_context: &AppContext) -> Result<CommandList, BrixError> {
         let mut parser: Option<&Box<dyn ConfigParser>> = None;
 
@@ -96,18 +110,24 @@ impl<'a> ConfigLoader<'a> {
     }
 }
 
+/// The preferred config with a Vec of command tuples instead
+/// of a Vec of HashMaps.
 #[derive(Debug)]
 struct Config {
     context: Option<HashMap<String, String>>,
     commands: Vec<(String, RawCommandParams)>,
 }
 
+/// The raw struct used for an entire config.
+/// Accurately describes the fields in a valid config file.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RawConfig {
     context: Option<HashMap<String, String>>,
     commands: Vec<HashMap<String, RawCommandParams>>,
 }
 
+/// The raw output for any config parser.
+/// Defines all fields and their inital (not preferred) types for all commands.
 #[derive(Serialize, Deserialize, Debug)]
 struct RawCommandParams {
     source: Option<String>,
