@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains [ExecCommand].
+
 use execute::{shell, Execute};
 use std::process::Stdio;
 use validator::Validate;
@@ -32,6 +34,7 @@ struct Params {
     stdout: Option<bool>,
 }
 
+/// The Brix exec command
 pub struct ExecCommand {}
 
 impl ExecCommand {

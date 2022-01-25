@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+#![doc = include_str!("../../README.md")]
+
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -31,6 +33,14 @@ fn main() {
     }
 }
 
+/// ## Lifecycle
+/// Brix's lifecycle constists of the following steps:
+/// 1) Get common variables like working and home directory and create config from `brix_cli`.
+/// 2) Get config directory and find module given CLI parameters accordingly.
+/// 3) Attempt to load the found config file with `brix_config_loader`.
+/// 4) Create the `AppContext` with the config and `ProcessorCore` which will be used during command execution.
+/// 5) Run the previous loader and get back a list of commands with their respective parameters.
+/// 6) Iterate through the commands and execute them accordingly.
 fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
     let home_dir = home::home_dir();
     let config = brix_cli::Config::new(home_dir.clone(), matches);
@@ -58,7 +68,6 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
     let mut loader = ConfigLoader::new(parsers, &config);
     let config_file = loader.load(declarations)?;
 
-    // Create the app context
     let processor = ProcessorCore::new();
     let app_context = AppContext {
         processor,
@@ -117,6 +126,8 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
     process::exit(0);
 }
 
+/// The main wrapper function for finding a module declaration file.
+/// Uses the `config_dir` to determine whether to search in parent directories or not.
 fn modules_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<Vec<PathBuf>> {
     let declarations;
     if config.config_dir.is_none() {
@@ -140,6 +151,7 @@ fn modules_from_config(dir: &PathBuf, config: &brix_cli::Config) -> Result<Vec<P
     Ok(declarations)
 }
 
+/// Uses `search_for_module_declarations` up to the home directory to find a module declaration.
 fn search_for_module_declarations_all(
     path: &str,
     config: &brix_cli::Config,
@@ -166,6 +178,7 @@ fn search_for_module_declarations_all(
     }
 }
 
+/// Finds valid module declarations in the given directory.
 fn search_for_module_declarations(
     current_path: &PathBuf,
     path: &str,

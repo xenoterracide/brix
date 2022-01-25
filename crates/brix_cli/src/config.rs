@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains the `Config` struct and helper functions.
+
 use crate::error;
 use clap::ArgMatches;
 use colored::*;
@@ -13,6 +15,9 @@ use std::path::PathBuf;
 
 use crate::app;
 
+/// The core config struct used within Brix's lifecycle.
+/// Mostly the direct output of the CLI args and flags,
+/// but includes some additional properties as well.
 pub struct Config {
     pub language: String,
     pub config_name: String,
@@ -28,7 +33,7 @@ pub struct Config {
 }
 
 impl Config {
-    /// Parses matches and sets into config
+    /// Creates the config given the home directory and argument matches from `clap`.
     pub fn new(home_dir: Option<PathBuf>, matches: ArgMatches<'static>) -> Self {
         let current_dir: Result<PathBuf, ()> = std::env::current_dir().or_else(|_| {
             error!(
@@ -76,6 +81,7 @@ impl Config {
     }
 }
 
+/// Returns a `log::LevelFilter` given a string.
 fn log_level_to_struct(level: &str) -> LevelFilter {
     match level {
         "off" => LevelFilter::Off,
@@ -88,6 +94,7 @@ fn log_level_to_struct(level: &str) -> LevelFilter {
     }
 }
 
+#[doc(hidden)]
 macro_rules! s {
     () => {
         String::new()

@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains [SearchReplaceCommand]
+
 use std::fs::{self, File};
 use std::io::Write;
 use std::path::PathBuf;
@@ -47,6 +49,7 @@ struct Params {
     replace: Option<String>,
 }
 
+/// The Brix search_replace command
 pub struct SearchReplaceCommand {}
 
 impl SearchReplaceCommand {

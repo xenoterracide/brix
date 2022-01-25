@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains [CopyCommand].
+
 use std::fs::copy;
 use std::path::PathBuf;
 
@@ -58,6 +60,7 @@ struct Params {
     overwrite: Option<bool>,
 }
 
+/// The Brix copy command
 pub struct CopyCommand {
     term: Term,
 }

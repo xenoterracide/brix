@@ -3,6 +3,9 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! # Brix Commands
+//! `brix_commands` stores all supported commands and common functionality between commands.
+
 pub use command::copy::CopyCommand;
 pub use command::exec::ExecCommand;
 pub use command::mkdir::MkdirCommand;

@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains [TemplateCommand]
+
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
@@ -56,6 +58,7 @@ impl OverwritableParams for TemplateParams {
     }
 }
 
+/// The Brix template command
 pub struct TemplateCommand {
     term: Term,
 }

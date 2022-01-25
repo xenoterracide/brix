@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 #[macro_export]
+/// Macro to easily join the working directory with a given path.
 macro_rules! dir {
     ($config: expr, $path: expr) => {
         $config.join($path)

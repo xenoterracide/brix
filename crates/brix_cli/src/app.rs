@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Module for creating the `clap` application and defining arguments and flags.
+
 use std::path::Path;
 
 use clap::{self, crate_authors, crate_version, App, AppSettings, Arg};

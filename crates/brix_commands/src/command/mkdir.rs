@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains [MkdirCommand].
+
 use std::fs::create_dir_all;
 use std::path::PathBuf;
 use validator::Validate;
@@ -37,6 +39,7 @@ struct Params {
     destination: Option<PathBuf>,
 }
 
+/// The Brix mkdir command
 pub struct MkdirCommand {}
 
 impl MkdirCommand {
