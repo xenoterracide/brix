@@ -2,7 +2,7 @@
 name = "brix"
 version = "0.3.0"
 authors = [
-  "Miapolis <41233357+Miapolis@users.noreply.github.com>",
+  "Ethan Lerner <ethan@lerners.io>",
   "Caleb Cushing <xenoterracide@gmail.com>"
 ]
 edition = "2018"
@@ -30,6 +30,9 @@ brix_config_loader = { path = "crates/brix_config_loader" }
 brix_errors = { path = "crates/brix_errors" }
 brix_processor = { path = "crates/brix_processor" }
 colored = "2.0.0"
+simple_logger = "2.1.0"
+log = "0.4.14"
+home = "0.5.3"
 
 [build-dependencies]
 clap = "2.33.3"

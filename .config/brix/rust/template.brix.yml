@@ -1,0 +1,9 @@
+commands:
+  - template:
+      source: template.rs.txt
+      destination: output/template/{{to-upper file}}.rs
+      overwrite: true
+      context:
+        function: testThatItWorks{{project}}
+        result: 20
+        file: "out/{{module}}"

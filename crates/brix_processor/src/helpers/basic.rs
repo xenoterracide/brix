@@ -3,8 +3,11 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains the [ToUpperHelper], [ToLowerHelper], and [ToTitleHelper] helpers.
+
 use crate::*;
 
+/// Converts the specified text to all uppercase characters.
 #[derive(Clone, Copy)]
 pub struct ToUpperHelper;
 
@@ -27,6 +30,7 @@ impl HelperDef for ToUpperHelper {
     }
 }
 
+/// Converts the specified text to all lowercase characters.
 #[derive(Clone, Copy)]
 pub struct ToLowerHelper;
 
@@ -49,6 +53,7 @@ impl HelperDef for ToLowerHelper {
     }
 }
 
+/// Converts the specified text to title case.
 #[derive(Clone, Copy)]
 pub struct ToTitleHelper;
 

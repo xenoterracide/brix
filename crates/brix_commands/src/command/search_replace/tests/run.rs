@@ -14,8 +14,12 @@ use brix_processor::ProcessorCore;
 macro_rules! do_test {
     ($path:expr, $search:expr, $replace:expr, $assertion:expr) => {{
         let processor = ProcessorCore::new();
+        let config = brix_cli::Config::default();
         let command = SearchReplaceCommand::new();
-        let context = AppContext { processor };
+        let context = AppContext {
+            processor,
+            config: &config,
+        };
 
         let path = PathBuf::from("src/command/search_replace").join($path);
         let contents = read_to_string(path.clone()).unwrap();
@@ -37,6 +41,8 @@ macro_rules! create_args {
             overwrite: None,
             search: Some(String::from($search)),
             replace: Some(String::from($replace)),
+            commands: None,
+            stdout: None,
             context: None,
         }
     };
@@ -84,7 +90,7 @@ fn diff_extension() {
 }
 
 #[test]
-fn non_utf8() {
+fn non_english() {
     do_test!(
         "non_english.txt",
         "это не английские буквы\n",

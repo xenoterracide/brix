@@ -3,11 +3,16 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! # Brix CLI
+//! Brix's main crate for handling the [clap](https://crates.io/crates/clap) application, some error formatting,
+//! and various other terminal functionality.
+
 use brix_errors::BrixError;
 
 mod app;
 mod args;
 mod config;
+mod print;
 
 pub mod select;
 

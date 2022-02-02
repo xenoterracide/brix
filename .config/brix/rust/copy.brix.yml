@@ -1,0 +1,8 @@
+context:
+  foo: object
+  gah: star
+commands:
+  - copy:
+      source: test.rs.txt
+      destination: output/{{module}}/{{foo}}/{{gah}}.rs
+      overwrite: true

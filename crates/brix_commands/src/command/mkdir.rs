@@ -3,13 +3,24 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains [MkdirCommand].
+
 use std::fs::create_dir_all;
 use std::path::PathBuf;
 use validator::Validate;
 
-use crate::command::{Command, ProcessedCommandParams};
+use crate::{
+    command::{Command, ProcessedCommandParams},
+    dir,
+};
 use brix_common::AppContext;
 use brix_errors::BrixError;
+
+#[cfg(test)]
+mod tests {
+    mod from;
+    mod run;
+}
 
 #[derive(Debug)]
 pub struct MkdirParams {
@@ -28,6 +39,7 @@ struct Params {
     destination: Option<PathBuf>,
 }
 
+/// The Brix mkdir command
 pub struct MkdirCommand {}
 
 impl MkdirCommand {
@@ -37,13 +49,13 @@ impl MkdirCommand {
 }
 
 impl Command for MkdirCommand {
-    fn run(&self, pcp: ProcessedCommandParams, _app_context: &AppContext) -> Result<(), BrixError> {
+    fn run(&self, pcp: ProcessedCommandParams, ctx: &AppContext) -> Result<(), BrixError> {
         let cp = Params {
             destination: pcp.destination,
         };
         cp.validate()?;
 
-        let dest = cp.destination.unwrap();
+        let dest = dir!(ctx.config.workdir, cp.destination.unwrap());
         create_dir_all(dest)?;
 
         Ok(())

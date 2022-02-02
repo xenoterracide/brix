@@ -23,6 +23,8 @@ mod params {
             overwrite: None,
             search: None,
             replace: None,
+            commands: None,
+            stdout: None,
             context: None,
         };
         assert_eq!(
@@ -41,12 +43,15 @@ mod params {
             term: Term::stdout(),
         };
 
+        // TODO: macros for processed command params since commands are changing
         let params = ProcessedCommandParams {
             source: None,
             destination: None,
             overwrite: None,
             search: None,
             replace: None,
+            commands: None,
+            stdout: None,
             context: None,
         };
 

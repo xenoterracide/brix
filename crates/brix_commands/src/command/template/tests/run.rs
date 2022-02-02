@@ -17,7 +17,11 @@ use brix_processor::ProcessorCore;
 macro_rules! do_test {
     ($source:expr, $context:expr, $assertion:expr) => {{
         let processor = ProcessorCore::new();
-        let context = AppContext { processor };
+        let config = brix_cli::Config::default();
+        let context = AppContext {
+            processor,
+            config: &config,
+        };
 
         let path = PathBuf::from("src/command/template").join($source);
         let temp_dir = "src/command/template/temp/";
@@ -43,6 +47,8 @@ macro_rules! create_args {
             overwrite: Some(true),
             search: None,
             replace: None,
+            commands: None,
+            stdout: None,
             context: Some($context),
         }
     };

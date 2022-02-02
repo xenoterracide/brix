@@ -18,15 +18,18 @@ use brix_common::AppContext;
 use brix_errors::BrixError;
 
 pub mod copy;
+pub mod exec;
 pub mod mkdir;
 pub mod search_replace;
 pub mod template;
 
+/// The base command trait that all commands must implement.
 pub trait Command {
     fn run(&self, pcp: ProcessedCommandParams, app_context: &AppContext) -> Result<(), BrixError>;
     fn name(&self) -> String;
 }
 
+/// A trait that derives from `Command` that prompt to overwrite the destination file.
 pub trait OverwritableCommand: Command {
     type Params: OverwritableParams + 'static;
 
@@ -109,12 +112,15 @@ where
     }
 }
 
+/// Trait for command parameters that stem from `OverwritableComman`.
 pub trait OverwritableParams {
     fn source(&self) -> PathBuf;
     fn destination(&self) -> PathBuf;
     fn overwrite(&self) -> Option<bool>;
 }
 
+/// A complete struct containing all possible fields in a command.
+/// All values are in their preferred type and not just strings.
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProcessedCommandParams {
     pub source: Option<PathBuf>,
@@ -122,5 +128,7 @@ pub struct ProcessedCommandParams {
     pub overwrite: Option<bool>,
     pub search: Option<String>,
     pub replace: Option<String>,
+    pub commands: Option<Vec<String>>,
+    pub stdout: Option<bool>,
     pub context: Option<HashMap<String, String>>,
 }

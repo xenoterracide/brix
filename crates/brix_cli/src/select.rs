@@ -3,11 +3,14 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Module for all things relating to select prompts.
+
 use dialoguer::console::Term;
 use dialoguer::Select;
 
 use brix_errors::BrixError;
 
+/// Basic wrapper around the `dialoguer::Select` prompt with stdout.
 pub fn do_select(items: Vec<&str>) -> Result<usize, BrixError> {
     let selection = Select::new()
         .items(&items)

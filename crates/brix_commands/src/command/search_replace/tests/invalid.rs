@@ -14,8 +14,12 @@ use brix_processor::ProcessorCore;
 macro_rules! run {
     ($args:expr) => {{
         let processor = ProcessorCore::new();
+        let config = brix_cli::Config::default();
         let command = SearchReplaceCommand::new();
-        let context = AppContext { processor };
+        let context = AppContext {
+            processor,
+            config: &config,
+        };
         // Ensure it is a validation error
         assert_eq!(
             command.run($args, &context).unwrap_err().kind.unwrap(),
@@ -32,6 +36,8 @@ fn nothing() {
         overwrite: None,
         search: None,
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -44,6 +50,8 @@ fn destination() {
         overwrite: None,
         search: None,
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -56,6 +64,8 @@ fn search() {
         overwrite: None,
         search: Some(String::new()),
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -68,6 +78,8 @@ fn replace() {
         overwrite: None,
         search: None,
         replace: Some(String::new()),
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -80,6 +92,8 @@ fn destination_search() {
         overwrite: None,
         search: Some(String::new()),
         replace: None,
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -92,6 +106,8 @@ fn destination_replace() {
         overwrite: None,
         search: None,
         replace: Some(String::new()),
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -104,6 +120,8 @@ fn search_replace() {
         overwrite: None,
         search: Some(String::new()),
         replace: Some(String::new()),
+        commands: None,
+        stdout: None,
         context: None,
     })
 }
@@ -117,6 +135,8 @@ fn valid() {
         overwrite: None,
         search: Some(String::new()),
         replace: Some(String::new()),
+        commands: None,
+        stdout: None,
         context: None,
     })
 }

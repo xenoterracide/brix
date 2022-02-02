@@ -3,12 +3,16 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Module responsible for processing a [RawConfig] into a list of commands.
+
 use lazy_static::lazy_static;
 use serde_json::json;
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-use brix_commands::{CopyCommand, MkdirCommand, SearchReplaceCommand, TemplateCommand};
+use brix_commands::{
+    CopyCommand, ExecCommand, MkdirCommand, SearchReplaceCommand, TemplateCommand,
+};
 use brix_common::context::{cli_config_to_map, ContextMap};
 use brix_common::AppContext;
 use brix_errors::BrixError;
@@ -19,10 +23,11 @@ use crate::{ProcessedCommandParams, RawCommandParams};
 
 lazy_static! {
     static ref SUPPORTED_COMMANDS: Vec<&'static str> =
-        vec!["copy", "mkdir", "search_replace", "template"];
+        vec!["copy", "exec", "mkdir", "search_replace", "template"];
 }
 
 impl<'a> ConfigLoader<'a> {
+    /// Converts the [RawConfig] into a list of commands or returns an error.
     pub fn process(
         &self,
         config: &RawConfig,
@@ -35,6 +40,7 @@ impl<'a> ConfigLoader<'a> {
             let value = command.values().next().unwrap();
             let command: Box<dyn Command> = match key.to_lowercase().as_str() {
                 "copy" => Box::new(CopyCommand::new()),
+                "exec" => Box::new(ExecCommand::new()),
                 "mkdir" => Box::new(MkdirCommand::new()),
                 "search_replace" => Box::new(SearchReplaceCommand::new()),
                 "template" => Box::new(TemplateCommand::new()),
@@ -93,6 +99,8 @@ impl<'a> ConfigLoader<'a> {
         Ok(list)
     }
 
+    /// Formats all the raw types (such as strings) into their preferred types
+    /// for the given field (such as a path).
     fn create_processed_args(
         &self,
         raw: &RawCommandParams,
@@ -112,6 +120,8 @@ impl<'a> ConfigLoader<'a> {
         let mut overwrite = None;
         let mut search = None;
         let mut replace = None;
+        let mut commands = None;
+        let mut stdout = None;
         let mut context = None;
 
         if let Some(raw_source) = &raw.source {
@@ -129,6 +139,12 @@ impl<'a> ConfigLoader<'a> {
         if let Some(raw_replace) = &raw.replace {
             replace = Some(lf!(raw_replace.clone()));
         }
+        if let Some(raw_commands) = &raw.commands {
+            commands = Some(raw_commands.clone());
+        }
+        if let Some(raw_stdout) = &raw.stdout {
+            stdout = Some(raw_stdout.clone());
+        }
         if let Some(raw_context) = &raw.context {
             context = Some(raw_context.clone());
         }
@@ -139,6 +155,8 @@ impl<'a> ConfigLoader<'a> {
             overwrite,
             search,
             replace,
+            commands,
+            stdout,
             context,
         })
     }

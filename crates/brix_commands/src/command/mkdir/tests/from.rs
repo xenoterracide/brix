@@ -6,7 +6,7 @@
 use std::path::PathBuf;
 
 use crate::command::Command;
-use crate::{ProcessedCommandParams, TemplateCommand};
+use crate::{MkdirCommand, ProcessedCommandParams};
 use brix_common::AppContext;
 use brix_errors::BrixErrorKind;
 use brix_processor::ProcessorCore;
@@ -15,16 +15,16 @@ macro_rules! run {
     ($args:expr) => {{
         let processor = ProcessorCore::new();
         let config = brix_cli::Config::default();
-        let command = TemplateCommand::new();
+        let command = MkdirCommand::new();
         let context = AppContext {
             processor,
             config: &config,
         };
-        // Ensure it is a validation error
+        // Ensure that it is a validation error that
         assert_eq!(
             command.run($args, &context).unwrap_err().kind.unwrap(),
             BrixErrorKind::Validation
-        );
+        )
     }};
 }
 
@@ -43,39 +43,11 @@ fn nothing() {
 }
 
 #[test]
-fn source() {
-    run!(ProcessedCommandParams {
-        source: Some(PathBuf::new()),
-        destination: None,
-        overwrite: None,
-        search: None,
-        replace: None,
-        commands: None,
-        stdout: None,
-        context: None,
-    })
-}
-
-#[test]
-fn destination() {
-    run!(ProcessedCommandParams {
-        source: None,
-        destination: Some(PathBuf::new()),
-        overwrite: None,
-        search: None,
-        replace: None,
-        commands: None,
-        stdout: None,
-        context: None,
-    })
-}
-
-#[test]
 #[should_panic]
 fn valid() {
     run!(ProcessedCommandParams {
-        source: Some(PathBuf::new()),
-        destination: Some(PathBuf::new()),
+        source: None,
+        destination: Some(PathBuf::from("/tmp")),
         overwrite: None,
         search: None,
         replace: None,

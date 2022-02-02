@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+//! Contains [SearchReplaceCommand]
+
 use std::fs::{self, File};
 use std::io::Write;
 use std::path::PathBuf;
@@ -12,6 +14,7 @@ use log::info;
 use validator::Validate;
 
 use crate::command::{Command, ProcessedCommandParams};
+use crate::dir;
 use brix_common::AppContext;
 use brix_errors::BrixError;
 
@@ -46,6 +49,7 @@ struct Params {
     replace: Option<String>,
 }
 
+/// The Brix search_replace command
 pub struct SearchReplaceCommand {}
 
 impl SearchReplaceCommand {
@@ -55,7 +59,7 @@ impl SearchReplaceCommand {
 }
 
 impl Command for SearchReplaceCommand {
-    fn run(&self, pcp: ProcessedCommandParams, _app_context: &AppContext) -> Result<(), BrixError> {
+    fn run(&self, pcp: ProcessedCommandParams, ctx: &AppContext) -> Result<(), BrixError> {
         let cp = Params {
             destination: pcp.destination,
             search: pcp.search,
@@ -63,7 +67,7 @@ impl Command for SearchReplaceCommand {
         };
         cp.validate()?;
 
-        let dest = cp.destination.unwrap();
+        let dest = dir!(ctx.config.workdir, cp.destination.unwrap());
         info!("reading to string from '{}'", dest.clone().display());
         let data = fs::read_to_string(dest.clone()).or_else(|err| {
             return Err(BrixError::with(&format!(
