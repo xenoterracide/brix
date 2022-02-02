@@ -6,6 +6,9 @@ on:
       - "check"
     branches:
       - "main"
+    create:
+      tags:
+        - "*"
     types:
       - "completed"
 
