@@ -5,6 +5,7 @@ on:
       - "**.toml"
       - Cargo.lock
       - .github/**
+      - PKGBUILD
 name: check
 jobs:
   check:
