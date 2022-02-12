@@ -1,21 +1,21 @@
 [package]
-name = "brix_config_loader"
-version = "0.1.0"
 authors = [
   "Ethan Lerner <ethan@lerners.io>",
-  "Caleb Cushing <xenoterracide@gmail.com>"
+  "Caleb Cushing <xenoterracide@gmail.com>",
 ]
 edition = "2018"
+name = "brix_config_loader"
+version = "0.1.0"
 
 [dependencies]
-brix_cli = { path = "../brix_cli" }
-brix_commands = { path = "../brix_commands" }
-brix_common = { path = "../brix_common" }
-brix_errors = { path = "../brix_errors" }
-brix_processor = { path = "../brix_processor" }
-serde = { version = "1.0.126", features = ["derive"] }
+brix_cli = {path = "../brix_cli", version = "0.3.0"}
+brix_commands = {path = "../brix_commands", version = "0.1.0"}
+brix_common = {path = "../brix_common", version = "0.1.0"}
+brix_errors = {path = "../brix_errors", version = "0.1.0"}
+brix_processor = {path = "../brix_processor", version = "0.1.0"}
+difflib = "0.4.0"
+lazy_static = "1.4.0"
+regex = "^1"
+serde = {version = "1.0.126", features = ["derive"]}
 serde_json = "1.0.64"
 serde_yaml = "0.8.17"
-regex = "^1"
-lazy_static = "1.4.0"
-difflib = "0.4.0"
