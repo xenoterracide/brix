@@ -3,7 +3,10 @@ authors = [
   "Ethan Lerner <ethan@lerners.io>",
   "Caleb Cushing <xenoterracide@gmail.com>",
 ]
+description = "Brix's crate for handling all application-related errors."
 edition = "2018"
+homepage = "https://github.com/miapolis/brix"
+license = "MIT"
 name = "brix_errors"
 version = "0.1.0"
 

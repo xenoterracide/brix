@@ -3,7 +3,10 @@ authors = [
   "Ethan Lerner <ethan@lerners.io>",
   "Caleb Cushing <xenoterracide@gmail.com>",
 ]
+description = "Brix's command crate for storing all supported commands."
 edition = "2018"
+homepage = "https://github.com/miapolis/brix"
+license = "MIT"
 name = "brix_commands"
 version = "0.1.0"
 
