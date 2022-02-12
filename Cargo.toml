@@ -1,44 +1,51 @@
 [package]
-name = "brix"
-version = "0.3.0"
 authors = [
   "Ethan Lerner <ethan@lerners.io>",
-  "Caleb Cushing <xenoterracide@gmail.com>"
+  "Caleb Cushing <xenoterracide@gmail.com>",
 ]
+categories = ["command-line-utilities", "code-generator"]
+description = "Brix is a CLI tool written in Rust for scaffolding and code generation."
 edition = "2018"
+homepage = "https://github.com/miapolis/brix"
+keywords = ["cli", "codegen"]
+license = "MIT"
+name = "brix"
+readme = "README.md"
+repository = "https://github.com/miapolis/brix"
+version = "0.3.0"
 
 [[bin]]
 bench = false
-path = "crates/brix_core/main.rs"
 name = "brix"
+path = "crates/brix_core/main.rs"
 
 [workspace]
 members = [
-    "crates/brix_cli",
-    "crates/brix_commands",
-    "crates/brix_common",
-    "crates/brix_config_loader",
-    "crates/brix_errors",
-    "crates/brix_processor",
+  "crates/brix_cli",
+  "crates/brix_commands",
+  "crates/brix_common",
+  "crates/brix_config_loader",
+  "crates/brix_errors",
+  "crates/brix_processor",
 ]
 
 [dependencies]
-brix_cli = { path = "crates/brix_cli" }
-brix_commands = { path = "crates/brix_commands" }
-brix_common = { path = "crates/brix_common" }
-brix_config_loader = { path = "crates/brix_config_loader" }
-brix_errors = { path = "crates/brix_errors" }
-brix_processor = { path = "crates/brix_processor" }
+brix_cli = {path = "crates/brix_cli"}
+brix_commands = {path = "crates/brix_commands"}
+brix_common = {path = "crates/brix_common"}
+brix_config_loader = {path = "crates/brix_config_loader"}
+brix_errors = {path = "crates/brix_errors"}
+brix_processor = {path = "crates/brix_processor"}
 colored = "2.0.0"
-simple_logger = "2.1.0"
-log = "0.4.14"
 home = "0.5.3"
+log = "0.4.14"
+simple_logger = "2.1.0"
 
 [build-dependencies]
 clap = "2.33.3"
 
 [dev-dependencies.cargo-husky]
-version = "^1"
 default-features = false # Disable features which are enabled by default
 features = ["precommit-hook", "run-cargo-fmt", "run-for-all"]
 
+version = "^1"
