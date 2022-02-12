@@ -30,12 +30,12 @@ members = [
 ]
 
 [dependencies]
-brix_cli = {path = "crates/brix_cli"}
-brix_commands = {path = "crates/brix_commands"}
-brix_common = {path = "crates/brix_common"}
-brix_config_loader = {path = "crates/brix_config_loader"}
-brix_errors = {path = "crates/brix_errors"}
-brix_processor = {path = "crates/brix_processor"}
+brix_cli = {version = "0.3.0", path = "crates/brix_cli"}
+brix_commands = {version = "0.1.0", path = "crates/brix_commands"}
+brix_common = {version = "0.1.0", path = "crates/brix_common"}
+brix_config_loader = {version = "0.1.0", path = "crates/brix_config_loader"}
+brix_errors = {version = "0.1.0", path = "crates/brix_errors"}
+brix_processor = {version = "0.1.0", path = "crates/brix_processor"}
 colored = "2.0.0"
 home = "0.5.3"
 log = "0.4.14"
@@ -47,5 +47,4 @@ clap = "2.33.3"
 [dev-dependencies.cargo-husky]
 default-features = false # Disable features which are enabled by default
 features = ["precommit-hook", "run-cargo-fmt", "run-for-all"]
-
 version = "^1"

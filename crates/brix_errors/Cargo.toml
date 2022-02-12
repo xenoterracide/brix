@@ -1,15 +1,15 @@
 [package]
-name = "brix_errors"
-version = "0.1.0"
 authors = [
   "Ethan Lerner <ethan@lerners.io>",
-  "Caleb Cushing <xenoterracide@gmail.com>"
+  "Caleb Cushing <xenoterracide@gmail.com>",
 ]
 edition = "2018"
+name = "brix_errors"
+version = "0.1.0"
 
 [dependencies]
 clap = "2.33.3"
-serde_yaml = "0.8.17"
-handlebars = "4.1.0"
-validator = "^0"
 fancy-regex = "0.7.0"
+handlebars = "4.1.0"
+serde_yaml = "0.8.17"
+validator = "0.14.0"
