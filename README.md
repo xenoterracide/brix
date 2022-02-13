@@ -6,6 +6,20 @@ Brix is a CLI tool written in Rust for scaffolding and code generation.
 
 Special thanks to [Caleb Cushing](https://github.com/xenoterracide) for the original Java version, early interface design and internal architecture.
 
+#### Installation
+
+Brix is available on [crates.io](https://crates.io/crates/brix) and the [AUR](https://aur.archlinux.org/packages/brix-git) for Arch Linux.
+
+Install with cargo:
+```
+cargo install brix
+```
+
+Arch Linux (use an [AUR helper](https://wiki.archlinux.org/title/AUR_helpers) like `yay` or `trizen`)
+```
+yay -S brix-git
+```
+
 #### Running
 
 Usage:
@@ -16,7 +30,7 @@ brix [OPTIONS] --config-dir | -d [CONFIG DIRECTORY]
 brix [OPTIONS] --workdir | -w [WORKING DIRECTORY]
 ```
 
-#### Installing locally
+#### Building locally
 
 ##### Requirements
 
