@@ -3,15 +3,18 @@ authors = [
   "Ethan Lerner <ethan@lerners.io>",
   "Caleb Cushing <xenoterracide@gmail.com>",
 ]
+description = "Brix's command crate for storing all supported commands."
 edition = "2018"
+homepage = "https://github.com/miapolis/brix"
+license = "MIT"
 name = "brix_commands"
 version = "0.1.0"
 
 [dependencies]
-brix_cli = {path = "../../crates/brix_cli"}
-brix_common = {path = "../brix_common"}
-brix_errors = {path = "../brix_errors"}
-brix_processor = {path = "../brix_processor"}
+brix_cli = {path = "../../crates/brix_cli", version = "0.3.0"}
+brix_common = {path = "../brix_common", version = "0.1.0"}
+brix_errors = {path = "../brix_errors", version = "0.1.0"}
+brix_processor = {path = "../brix_processor", version = "0.1.0"}
 colored = "2.0.0"
 dialoguer = "^0"
 execute = "0.2.9"
