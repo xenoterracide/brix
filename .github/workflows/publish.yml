@@ -49,4 +49,4 @@ jobs:
           key: ${{ steps.rust-toolchain.outputs.rustc_hash }}-${{hashFiles('Cargo.lock')}}
       - run: cargo install cargo-release
       - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }}
-      - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }} --execute
+      - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }} --execute --no-confirm
