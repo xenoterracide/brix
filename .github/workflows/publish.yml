@@ -39,6 +39,13 @@ jobs:
         with:
           toolchain: stable
           profile: minimal
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo
+            target/debug/deps
+            target/debug/build
+          key: ${{ steps.rust-toolchain.outputs.rustc_hash }}-${{hashFiles('Cargo.lock')}}
       - run: cargo install cargo-release
       - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }}
       - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }} --execute
