@@ -29,3 +29,16 @@ jobs:
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           commit_message: Update AUR package
           ssh_keyscan_types: rsa,dsa,ecdsa,ed25519
+  crates-io-publish:
+    name: Crates.io publish
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions-rs/toolchain@v1
+        id: rust-toolchain
+        with:
+          toolchain: stable
+          profile: minimal
+      - run: cargo install cargo-release
+      - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }}
+      - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }} --execute
