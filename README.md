@@ -56,7 +56,7 @@ Run `cargo doc --no-deps --workspace --document-private-items --open`
 #### **Language directory**
 
 To start using Brix in your project, create a `.config/brix` directory in your project.
-This directory will contain your configuration files. Specifying the first argument after running `brix` will tell it which subdirectory to use. For example, starting Brix with `brix java` will search the `.config/brix/java` directory for configuration files in your project. This parameter is known as the **language**. If a config file isn't found, brix will move up to the parent directory all the way up to HOME, until it finds a directory that contains a `.config/brix/java`. Of course, this parameter doesn't have to be resitrcted to a programming language, it's there to group configuration files used in a similar way, perhaps for bootstraping a specific project.
+This directory will contain your configuration files. Specifying the first argument after running `brix` will tell it which subdirectory to use. For example, starting Brix with `brix java` will search the `.config/brix/java` directory for configuration files in your project. This parameter is known as the **language**. If a config file isn't found, Brix will move up to the parent directory all the way up to HOME, until it finds a directory that contains a `.config/brix/java`. This parameter doesn't necessarily have to be resitrcted to a programming language, it's there to group configuration files used in a similar way, perhaps for bootstraping a specific project.
 
 #### **Config name**
 
@@ -68,7 +68,7 @@ These two arguments are specific to your config file, you can use them however y
 
 ### Config file
 
-Brix offers various commands for you to use to scaffold and generate your project. At the top-most level, the config file is just a list of commands, therefore we can start by declaring the commands list.
+Brix offers various commands for you to use to scaffold and generate your project. At the top-most level, the config file is just a list of commands, therefore we can start by just declaring the `commands` property:
 
 ```yml
 # example.brix.yml
@@ -104,8 +104,8 @@ commands:
 
 The `source` directory is always relative to where the config file is located. In this case it would be `.config/brix/js/.gitignore`. The `destination` directory is relative to where you run `brix` from, this is also known as the working directory, and can be overriden with the `--workdir` or `-w` flag.
 Now, if we were to run `brix js gitignore` in our project directory, we would actually get an error.
-That's because brix requires the `project` and `module` arguments to be specified.
-In our case, we're not using them yet so we can specify anything. Now, running `brix js gitignore project module` will run the command. If you didn't already have an `app` directory, brix will create one for you and copy the `.gitignore` file to it.
+That's because Brix requires the `project` and `module` arguments to be specified.
+In our case, we're not using them yet so we can specify anything. Now, running `brix js gitignore project module` will run the command. If you didn't already have an `app` directory, Brix will create one for you and copy the `.gitignore` file to it.
 
 You might notice though that this isn't that convenient for our project if we wan't to put the file somewhere other than `app`. Let's say now we have a `backend` folder in addition to `app`. To copy the .gitignore file to backend, we would have to change the `destination` in the config file each time. Instead, this is where the project and module arguments come in handy. Let's change the config file to:
 
