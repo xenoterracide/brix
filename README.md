@@ -268,6 +268,10 @@ For the `to-case` helper, the following cases are supported:
 - `upper-flat`
 - `alternating`
 
+#### **Reusing templates**
+
+Brix has the added benefit of not requiring a specific folder structure to be used inside the language directories. Templates and other files are completely independent from config files. This means that reusing templates is a lot easier, as everything is referenced with just a path. If you need to use the same template within two different config files, simply reference the path to the file in both and use a different context.
+
 ### Full Example
 
 Finally, let's take a look at a full example using Brix to bootstrap a Java project. The `.config/brix` directory is conveniently located in HOME in order to be able to run `brix` from anywhere and create a project like this.
