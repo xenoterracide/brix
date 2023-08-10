@@ -5,7 +5,8 @@
 
 //! Contains [CopyCommand].
 
-use std::fs::copy;
+extern crate fs_extra;
+
 use std::path::PathBuf;
 
 use dialoguer::console::Term;
@@ -14,6 +15,8 @@ use validator::{Validate, ValidationErrors};
 
 use crate::command::{OverwritableCommand, OverwritableParams, ProcessedCommandParams};
 use crate::dir;
+use fs_extra::dir::{copy, CopyOptions};
+
 use brix_common::AppContext;
 use brix_errors::BrixError;
 
@@ -103,7 +106,13 @@ impl OverwritableCommand for CopyCommand {
             dest.display(),
         );
 
-        copy(params.source, dest)?;
+        let options = CopyOptions {
+            overwrite: params.overwrite.unwrap_or(false),
+            content_only: true,
+            ..CopyOptions::new()
+        };
+
+        copy(params.source, dest, &options)?;
         Ok(())
     }
 

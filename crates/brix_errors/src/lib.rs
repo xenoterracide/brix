@@ -95,6 +95,15 @@ impl From<fancy_regex::Error> for BrixError {
     }
 }
 
+impl From<fs_extra::error::Error> for BrixError {
+    fn from(err: fs_extra::error::Error) -> BrixError {
+        BrixError {
+            kind: None,
+            message: format!("{}", err),
+        }
+    }
+}
+
 impl Display for BrixErrorKind {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let formatted = match self {
