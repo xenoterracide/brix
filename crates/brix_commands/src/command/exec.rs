@@ -6,14 +6,15 @@
 //! Contains [ExecCommand].
 
 use execute::{shell, Execute};
-use std::process::Stdio;
+use std::process::{ExitStatus, Stdio};
 use validator::Validate;
 
 use crate::command::{Command, ProcessedCommandParams};
 use brix_common::AppContext;
-use brix_errors::BrixError;
+use brix_errors::{BrixError, BrixErrorKind};
 
 use colored::*;
+use log::{debug, error, info, trace};
 
 #[derive(Debug)]
 pub struct ExecParams {
@@ -56,20 +57,25 @@ impl Command for ExecCommand {
 
         for command in commands.iter() {
             let mut exec_command = shell(command);
-            exec_command.stdout(Stdio::piped());
+            exec_command.stdout(Stdio::piped()).stderr(Stdio::piped());
 
-            println!("[[ {} ]]", command.bold());
+            info!("[[ {} ]]", command.bold());
+            let output = exec_command.execute_output().unwrap();
 
-            let mut output: Option<std::process::Output> = None;
+            let stdout = String::from_utf8(output.stdout).unwrap();
+
             if use_stdout {
-                output = Some(exec_command.execute_output().unwrap());
+                println!("{}", stdout);
             } else {
-                exec_command.execute().unwrap();
+                trace!("{}", stdout);
             }
 
-            if use_stdout {
-                let stdout = String::from_utf8(output.unwrap().stdout).unwrap();
-                println!("{}", stdout);
+            if !output.status.success() {
+                error!("[[ {} ]]", command.bold());
+                return Err(BrixError {
+                    kind: None,
+                    message: String::from_utf8(output.stderr).unwrap(),
+                });
             }
         }
 
