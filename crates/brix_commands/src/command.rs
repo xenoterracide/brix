@@ -82,6 +82,11 @@ where
 
         let dest = &params.destination();
         let parent = &dest.parent();
+        debug!(
+            "overwrite param '{}' '{}'",
+            params.overwrite().is_some(),
+            params.overwrite().unwrap()
+        );
         if !(parent.is_some() && parent.unwrap().exists()) && parent.is_some() {
             debug!("creating directory '{}'", parent.unwrap().display());
             if let Err(e) = create_dir_all(parent.unwrap()) {
@@ -95,11 +100,11 @@ where
 
         if params.overwrite().is_some() {
             let overwrite = params.overwrite().unwrap();
-            if overwrite {
-                return self.write(params, app_context);
-            } else if dest.exists() {
-                return self.skip_write(dest);
-            }
+            return if (dest.exists() && overwrite) || !dest.exists() {
+                self.write(params, app_context)
+            } else {
+                self.skip_write(dest)
+            };
         }
         if self.ask_to_write(dest) {
             return self.write(params, app_context);
