@@ -31,6 +31,8 @@ impl<'a> ProcessorCore<'a> {
         handlebars.register_helper("to-lower", Box::new(helpers::ToLowerHelper));
         handlebars.register_helper("to-title", Box::new(helpers::ToTitleHelper));
         handlebars.register_helper("to-case", Box::new(helpers::ToCaseHelper));
+        handlebars.register_helper("to-flat", Box::new(helpers::ToFlatHelper));
+        handlebars.register_helper("to-java-package", Box::new(helpers::ToJavaPackageHelper));
         Self { handlebars }
     }
 
