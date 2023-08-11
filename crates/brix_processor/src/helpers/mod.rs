@@ -8,5 +8,8 @@
 mod basic;
 mod casing;
 
-pub use basic::{ToFlatHelper, ToJavaPackageHelper, ToLowerHelper, ToTitleHelper, ToUpperHelper};
+pub use basic::{
+    ToFlatHelper, ToJavaPackageHelper, ToJavaPackagePathHelper, ToLowerHelper, ToTitleHelper,
+    ToUpperHelper,
+};
 pub use casing::ToCaseHelper;

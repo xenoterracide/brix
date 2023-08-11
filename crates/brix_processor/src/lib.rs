@@ -33,6 +33,10 @@ impl<'a> ProcessorCore<'a> {
         handlebars.register_helper("to-case", Box::new(helpers::ToCaseHelper));
         handlebars.register_helper("to-flat", Box::new(helpers::ToFlatHelper));
         handlebars.register_helper("to-java-package", Box::new(helpers::ToJavaPackageHelper));
+        handlebars.register_helper(
+            "to-java-package-path",
+            Box::new(helpers::ToJavaPackagePathHelper),
+        );
         Self { handlebars }
     }
 

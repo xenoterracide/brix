@@ -130,3 +130,35 @@ impl HelperDef for ToJavaPackageHelper {
         Ok(())
     }
 }
+
+#[derive(Clone, Copy)]
+pub struct ToJavaPackagePathHelper;
+
+impl HelperDef for ToJavaPackagePathHelper {
+    fn call<'reg: 'rc, 'rc>(
+        &self,
+        h: &Helper,
+        _: &Handlebars,
+        _: &Context,
+        _rc: &mut RenderContext,
+        out: &mut dyn Output,
+    ) -> HelperResult {
+        let param = h.param(0).ok_or(RenderError::new(
+            "this function requires an argument to process",
+        ))?;
+        let rendered = param.value().render();
+
+        let conv = Converter::new()
+            .set_pattern(Pattern::Camel)
+            .remove_boundaries(&[
+                Boundary::UpperDigit,
+                Boundary::LowerDigit,
+                Boundary::DigitUpper,
+                Boundary::DigitLower,
+            ])
+            .set_delim("/");
+
+        out.write(&conv.convert(rendered).to_lowercase())?;
+        Ok(())
+    }
+}
