@@ -114,7 +114,7 @@ fn flag_log_level() -> Arg<'static, 'static> {
         .help(HELP)
         .long("log-level")
         .takes_value(true)
-        .default_value("off")
+        .default_value("error")
         .possible_values(&["off", "error", "warn", "info", "debug", "trace"])
 }
 
