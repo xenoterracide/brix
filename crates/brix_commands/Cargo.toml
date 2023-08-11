@@ -15,14 +15,14 @@ brix_cli = {path = "../../crates/brix_cli", version = "0.3.3"}
 brix_common = {path = "../brix_common", version = "0.1.1"}
 brix_errors = {path = "../brix_errors", version = "0.1.1"}
 brix_processor = {path = "../brix_processor", version = "0.1.1"}
-colored = "2.0.0"
+colored = "2"
 dialoguer = "^0"
 fs_extra = "^1"
 execute = "0.2.9"
-fancy-regex = "0.7.0"
+fancy-regex = "0.7"
 log = "^0"
-serde = {version = "1.0.126", features = ["derive"]}
-validator = {version = "0.14.0", features = ["derive"]}
+serde = {version = "1", features = ["derive"]}
+validator = {version = "0.14", features = ["derive"]}
 
 [dev-dependencies]
 maplit = "1.0.2"

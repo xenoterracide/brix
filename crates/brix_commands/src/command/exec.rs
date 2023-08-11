@@ -6,15 +6,15 @@
 //! Contains [ExecCommand].
 
 use execute::{shell, Execute};
-use std::process::{ExitStatus, Stdio};
+use std::process::Stdio;
 use validator::Validate;
 
 use crate::command::{Command, ProcessedCommandParams};
 use brix_common::AppContext;
-use brix_errors::{BrixError, BrixErrorKind};
+use brix_errors::BrixError;
 
 use colored::*;
-use log::{debug, error, info, trace};
+use log::{error, info, trace};
 
 #[derive(Debug)]
 pub struct ExecParams {
