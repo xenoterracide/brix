@@ -83,7 +83,7 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
         )));
     })?;
 
-    println!(
+    info!(
         "{} {}",
         "CONFIG".bright_blue(),
         util::display_path(&config_file.to_string_lossy())
@@ -100,7 +100,7 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
         let name = command.name();
         let (total, ran) = *map.get(&name).unwrap();
 
-        println!(
+        info!(
             "{} {} ({}/{})",
             "RUNNING".green(),
             name.bold(),
@@ -122,7 +122,7 @@ fn try_main(matches: brix_cli::ArgMatches<'static>) -> Result<()> {
     }
     let elapsed = start.elapsed();
 
-    println!("----------\n{} in {:#?}", "DONE!".bright_green(), elapsed);
+    info!("----------\n{} in {:#?}", "DONE!".bright_green(), elapsed);
     process::exit(0);
 }
 
