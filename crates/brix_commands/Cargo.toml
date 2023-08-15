@@ -26,5 +26,5 @@ validator = {version = "0.14", features = ["derive"]}
 
 [dev-dependencies]
 maplit = "1.0.2"
-pretty_assertions = "^0"
+pretty_assertions = "1"
 spectral = "^0"
