@@ -13,7 +13,7 @@ license = "MIT"
 name = "brix"
 readme = "README.md"
 repository = "https://github.com/miapolis/brix"
-version = "0.3.3"
+version = "0.4.0"
 
 [[bin]]
 bench = false
@@ -32,11 +32,11 @@ members = [
 
 [dependencies]
 brix_cli = {version = "0.3.3", path = "crates/brix_cli"}
-brix_commands = {version = "0.1.1", path = "crates/brix_commands"}
+brix_commands = {version = "0.2", path = "crates/brix_commands"}
 brix_common = {version = "0.1.1", path = "crates/brix_common"}
 brix_config_loader = {version = "0.1.1", path = "crates/brix_config_loader"}
-brix_errors = {version = "0.1.1", path = "crates/brix_errors"}
-brix_processor = {version = "0.1.1", path = "crates/brix_processor"}
+brix_errors = {version = "0.2", path = "crates/brix_errors"}
+brix_processor = {version = "0.2", path = "crates/brix_processor"}
 colored = "2.0.0"
 home = "0.5.3"
 log = "0.4.14"
