@@ -241,32 +241,24 @@ Brix also provides useful helpers for manipulating these variables, specifically
 - `to-lower`
 - `to-title`
 - `to-case`
+- `to-flat`
+- `to-java-package`
+- `to-java-package-path`
 
 All of these can be used to replace, for example, usage of `{{project}}`:
-
 ```yml
-# project: 'foo BAR'
-{{to-upper project}} # FOO BAR
-{{to-lower project}} # foo bar
-{{to-title project}} # Foo Bar
-{{to-case 'snake' project}} # foo_bar
+context:
+  project: 'foo BAR 40'
 ```
 
-For the `to-case` helper, the following cases are supported:
-
-- `toggle`
-- `pascal`
-- `camel`
-- `upper-camel`
-- `snake`
-- `upper-snake`
-- `screaming-snake`
-- `kebab`
-- `cobol`
-- `train`
-- `flat`
-- `upper-flat`
-- `alternating`
+```hbs
+{{to-upper              project}} # FOO BAR 40
+{{to-lower              project}} # foo bar 40
+{{to-title              project}} # Foo Bar 40
+{{to-flat               project}} # foobar40
+{{to-java-package       project}} # foo.bar40
+{{to-java-package-path  project}} # foo/bar40
+```
 
 #### **Reusing templates**
 
