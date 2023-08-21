@@ -50,5 +50,7 @@ jobs:
       - run: cargo install cargo-release
       - run: git config user.email ${{ secrets.GIT_EMAIL }}
       - run: git config user.name ${{ secrets.GIT_NAME }}
-      - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }} --exclude brix
-      - run: cargo release --workspace --token ${{ secrets.CRATES_IO_TOKEN }} --execute --no-confirm
+      - name: release
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo release --workspace --execute --no-confirm
