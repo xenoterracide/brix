@@ -75,7 +75,7 @@ dependencies = [
 
 [[package]]
 name = "brix"
-version = "0.4.0"
+version = "0.3.3"
 dependencies = [
  "brix_cli",
  "brix_commands",
@@ -93,7 +93,7 @@ dependencies = [
 
 [[package]]
 name = "brix_cli"
-version = "0.3.4"
+version = "0.3.3"
 dependencies = [
  "brix_errors",
  "clap",
@@ -104,7 +104,7 @@ dependencies = [
 
 [[package]]
 name = "brix_commands"
-version = "0.2.0"
+version = "0.1.1"
 dependencies = [
  "brix_cli",
  "brix_common",
@@ -125,7 +125,7 @@ dependencies = [
 
 [[package]]
 name = "brix_common"
-version = "0.1.2"
+version = "0.1.1"
 dependencies = [
  "brix_cli",
  "brix_processor",
@@ -133,7 +133,7 @@ dependencies = [
 
 [[package]]
 name = "brix_config_loader"
-version = "0.1.2"
+version = "0.1.1"
 dependencies = [
  "brix_cli",
  "brix_commands",
@@ -150,7 +150,7 @@ dependencies = [
 
 [[package]]
 name = "brix_errors"
-version = "0.2.0"
+version = "0.1.1"
 dependencies = [
  "clap",
  "fancy-regex",
@@ -162,7 +162,7 @@ dependencies = [
 
 [[package]]
 name = "brix_processor"
-version = "0.2.0"
+version = "0.1.1"
 dependencies = [
  "brix_errors",
  "convert_case",
@@ -546,6 +546,12 @@ name = "itoa"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af150ab688ff2122fcef229be89cb50dd66af9e01a4ff320cc137eecc9bacc38"
+
+[[package]]
+name = "joinery"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72167d68f5fce3b8655487b8038691a3c9984ee769590f93f2a631f4ad64e4f5"
 
 [[package]]
 name = "lazy_static"
@@ -1110,10 +1116,11 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "titlecase"
-version = "1.1.0"
+version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f565e410cfc24c2f2a89960b023ca192689d7f77d3f8d4f4af50c2d8affe1117"
+checksum = "38397a8cdb017cfeb48bf6c154d6de975ac69ffeed35980fde199d2ee0842042"
 dependencies = [
+ "joinery",
  "lazy_static",
  "regex",
 ]
