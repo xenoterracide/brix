@@ -8,10 +8,10 @@ edition = "2018"
 homepage = "https://github.com/miapolis/brix"
 license = "MIT"
 name = "brix_processor"
-version = "0.1.1"
+version = "0.2.0"
 
 [dependencies]
-brix_errors = {path = "../../crates/brix_errors", version = "0.1.1"}
+brix_errors = {path = "../../crates/brix_errors", version = "0.2.0" }
 convert_case = "0.6"
 handlebars = "4.1.0"
 serde = {version = "1.0.126", features = ["derive"]}
