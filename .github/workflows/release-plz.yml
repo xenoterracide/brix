@@ -1,3 +1,4 @@
+name: release-plz
 permissions:
   pull-requests: write
   contents: write
