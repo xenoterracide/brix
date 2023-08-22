@@ -8,8 +8,8 @@ edition = "2018"
 homepage = "https://github.com/miapolis/brix"
 license = "MIT"
 name = "brix_common"
-version = "0.2.0"
+version = "0.1.1"
 
 [dependencies]
-brix_cli = {path = "../brix_cli", version = "0.4.0" }
-brix_processor = {path = "../brix_processor", version = "0.2.0" }
+brix_cli = {path = "../brix_cli", version = "0.3.3"}
+brix_processor = {path = "../brix_processor", version = "0.1.1"}

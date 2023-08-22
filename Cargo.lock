@@ -75,7 +75,7 @@ dependencies = [
 
 [[package]]
 name = "brix"
-version = "0.4.0"
+version = "0.3.3"
 dependencies = [
  "brix_cli",
  "brix_commands",
@@ -93,7 +93,7 @@ dependencies = [
 
 [[package]]
 name = "brix_cli"
-version = "0.4.0"
+version = "0.3.3"
 dependencies = [
  "brix_errors",
  "clap",
@@ -104,7 +104,7 @@ dependencies = [
 
 [[package]]
 name = "brix_commands"
-version = "0.2.0"
+version = "0.1.1"
 dependencies = [
  "brix_cli",
  "brix_common",
@@ -125,7 +125,7 @@ dependencies = [
 
 [[package]]
 name = "brix_common"
-version = "0.2.0"
+version = "0.1.1"
 dependencies = [
  "brix_cli",
  "brix_processor",
@@ -133,7 +133,7 @@ dependencies = [
 
 [[package]]
 name = "brix_config_loader"
-version = "0.2.0"
+version = "0.1.1"
 dependencies = [
  "brix_cli",
  "brix_commands",
@@ -150,7 +150,7 @@ dependencies = [
 
 [[package]]
 name = "brix_errors"
-version = "0.2.0"
+version = "0.1.1"
 dependencies = [
  "clap",
  "fancy-regex",
@@ -162,7 +162,7 @@ dependencies = [
 
 [[package]]
 name = "brix_processor"
-version = "0.2.0"
+version = "0.1.1"
 dependencies = [
  "brix_errors",
  "convert_case",
