@@ -11,5 +11,5 @@ name = "brix_common"
 version = "0.1.1"
 
 [dependencies]
-brix_cli = {path = "../brix_cli", version = "0.3.3"}
+brix_cli = {path = "../brix_cli", version = "0.4"}
 brix_processor = {path = "../brix_processor", version = "0.1.1"}

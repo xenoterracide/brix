@@ -11,7 +11,7 @@ name = "brix_cli"
 version = "0.4.0"
 
 [dependencies]
-brix_errors = {path = "../../crates/brix_errors", version = "0.1.1"}
+brix_errors = {path = "../../crates/brix_errors", version = "0.2"}
 colored = "2.0.0"
 dialoguer = "0.10"
 log = "0.4.14"

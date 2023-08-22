@@ -11,7 +11,7 @@ name = "brix_processor"
 version = "0.1.1"
 
 [dependencies]
-brix_errors = {path = "../../crates/brix_errors", version = "0.1.1"}
+brix_errors = {path = "../../crates/brix_errors", version = "0.2"}
 convert_case = "0.6"
 handlebars = "4.1.0"
 serde = {version = "1.0.126", features = ["derive"]}
