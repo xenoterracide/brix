@@ -7,12 +7,12 @@ categories = ["command-line-utilities", "code-generator"]
 description = "Brix is a CLI tool written in Rust for scaffolding and code generation."
 documentation = "https://docs.rs/brix"
 edition = "2018"
-homepage = "https://github.com/miapolis/brix"
+homepage = "https://github.com/xenoterracide/brix"
 keywords = ["cli", "codegen"]
 license = "MIT"
 name = "brix"
 readme = "README.md"
-repository = "https://github.com/miapolis/brix"
+repository = "https://github.com/xenoterracide/brix"
 version = "0.3.3"
 
 [[bin]]

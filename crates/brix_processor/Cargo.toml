@@ -5,7 +5,7 @@ authors = [
 ]
 description = "Brix's simple wrapper around handlebars with added helpers."
 edition = "2018"
-homepage = "https://github.com/miapolis/brix"
+homepage = "https://github.com/xenoterracide/brix"
 license = "MIT"
 name = "brix_processor"
 version = "0.1.1"
