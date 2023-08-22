@@ -8,7 +8,7 @@ edition = "2018"
 homepage = "https://github.com/xenoterracide/brix"
 license = "MIT"
 name = "brix_cli"
-version = "0.4.0"
+version = "0.4.1"
 
 [dependencies]
 brix_errors = {path = "../../crates/brix_errors", version = "0.2"}
