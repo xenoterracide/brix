@@ -8,7 +8,7 @@ edition = "2018"
 homepage = "https://github.com/xenoterracide/brix"
 license = "MIT"
 name = "brix_errors"
-version = "0.1.1"
+version = "0.2.0"
 
 [dependencies]
 clap = "2.33.3"
