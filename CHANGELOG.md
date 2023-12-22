@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.5](https://github.com/xenoterracide/brix/compare/brix-v0.3.4...brix-v0.3.5) - 2023-12-22
+
+### Other
+- update locks
+
 ## [0.3.4](https://github.com/xenoterracide/brix/compare/brix-v0.3.3...brix-v0.3.4) - 2023-08-22
 
 ### Fixed
