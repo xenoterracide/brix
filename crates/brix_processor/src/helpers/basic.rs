@@ -7,6 +7,7 @@
 
 use crate::*;
 use convert_case::{Boundary, Case, Casing, Converter, Pattern};
+use log::debug;
 
 /// Converts the specified text to all uppercase characters.
 #[derive(Clone, Copy)]
@@ -158,7 +159,11 @@ impl HelperDef for ToJavaPackagePathHelper {
             ])
             .set_delim("/");
 
-        out.write(&conv.convert(rendered).to_lowercase())?;
+        let path = &conv.convert(rendered).to_lowercase().replace(".", "/");
+
+        debug!("path: '{}'", path);
+
+        out.write(path)?;
         Ok(())
     }
 }
