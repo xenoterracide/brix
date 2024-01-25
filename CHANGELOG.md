@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.2](https://github.com/xenoterracide/brix/compare/brix-v0.4.1...brix-v0.4.2) - 2024-01-25
+
+### Fixed
+- git hooks
+
+### Other
+- add rustfmt to lintstaged
+- switch to node for things like hooks
+- update locks
+
 ## [0.3.4](https://github.com/xenoterracide/brix/compare/brix-v0.3.3...brix-v0.3.4) - 2023-08-22
 
 ### Fixed
