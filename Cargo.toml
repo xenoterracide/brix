@@ -1,9 +1,6 @@
 [package]
-authors = [
-  "Ethan Lerner <ethan@lerners.io>",
-  "Caleb Cushing <xenoterracide@gmail.com>",
-]
-categories = ["command-line-utilities", "code-generator"]
+authors = ["Ethan Lerner <ethan@lerners.io>", "Caleb Cushing <xenoterracide@gmail.com>"]
+categories = ["command-line-utilities"]
 description = "Brix is a CLI tool written in Rust for scaffolding and code generation."
 documentation = "https://docs.rs/brix"
 edition = "2018"
@@ -31,21 +28,16 @@ members = [
 ]
 
 [dependencies]
-brix_cli = {version = "0.4", path = "crates/brix_cli"}
-brix_commands = { version = "0.1.2", path = "crates/brix_commands"}
-brix_common = { version = "0.1.2", path = "crates/brix_common"}
-brix_config_loader = { version = "0.1.2", path = "crates/brix_config_loader"}
-brix_errors = {version = "0.2", path = "crates/brix_errors"}
-brix_processor = { version = "0.1.2", path = "crates/brix_processor"}
+brix_cli = { version = "0.4", path = "crates/brix_cli" }
+brix_commands = { version = "0.1.2", path = "crates/brix_commands" }
+brix_common = { version = "0.1.2", path = "crates/brix_common" }
+brix_config_loader = { version = "0.1.2", path = "crates/brix_config_loader" }
+brix_errors = { version = "0.2", path = "crates/brix_errors" }
+brix_processor = { version = "0.1.2", path = "crates/brix_processor" }
 colored = "2.0.0"
 home = "0.5.3"
 log = "0.4.14"
 simple_logger = "4"
 
 [build-dependencies]
-clap = "2.33.3"
-
-[dev-dependencies.cargo-husky]
-default-features = false # Disable features which are enabled by default
-features = ["precommit-hook", "run-cargo-fmt", "run-for-all"]
-version = "^1"
+clap = "4"

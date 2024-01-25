@@ -1,0 +1,21 @@
+{
+  "name": "ai-wh40k",
+  "private": true,
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@prettier/plugin-xml": "^3.2.2",
+    "git-conventional-commits": "^2.6.5",
+    "lint-staged": "^15.2.0",
+    "pinst": "3",
+    "prettier": "^3.1.1",
+    "prettier-plugin-java": "^2.5.0",
+    "prettier-plugin-properties": "^0.3.0",
+    "prettier-plugin-sh": "^0.13.1",
+    "prettier-plugin-toml": "^2.0.1"
+  },
+  "scripts": {
+    "postinstall": "git config core.hooksPath .config/git/hooks",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable"
+  }
+}
