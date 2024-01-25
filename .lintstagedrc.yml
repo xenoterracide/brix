@@ -1,1 +1,2 @@
 "*": prettier --cache --ignore-unknown --write
+"*.rs": rustfmt
